@@ -41,56 +41,63 @@ const DUMMY_PRODUCT_ADs = [
     title: "Barbecue portable grill",
     url: "https://www.car-mart.com/",
     photoUrl: "/grill.png",
-    shop: "grillshop.com",
+    sellername: "grillshop.com",
     price: 499,
+    rating: 10
   },
   {
     title: "Barbecue portable grill",
     url: "https://www.car-mart.com/",
     photoUrl: "/grill.png",
-    shop: "grillshop.com",
+    sellername: "grillshop.com",
     price: 499,
+    rating: 5
   },
   {
     title: "Barbecue portable grill",
     url: "https://www.car-mart.com/",
     photoUrl: "/grill.png",
-    shop: "grillshop.com",
+    sellername: "grillshop.com",
     price: 499,
+    additional: "50% price drop"
   },
   {
     title: "Barbecue portable grill",
     url: "https://www.car-mart.com/",
     photoUrl: "/grill.png",
-    shop: "grillshop.com",
+    sellername: "grillshop.com",
     price: 499,
+    rating: 7
   },
   {
     title: "Barbecue portable grill",
     url: "https://www.car-mart.com/",
     photoUrl: "/grill.png",
-    shop: "grillshop.com",
+    sellername: "grillshop.com",
     price: 499,
+    rating: 0
   },
   {
     title: "Barbecue portable grill",
     url: "https://www.car-mart.com/",
     photoUrl: "/grill.png",
-    shop: "grillshop.com",
+    sellername: "grillshop.com",
     price: 499,
+    additional: "50% price drop"
   },
   {
     title: "Barbecue portable grill",
     url: "https://www.car-mart.com/",
     photoUrl: "/grill.png",
-    shop: "grillshop.com",
+    sellername: "grillshop.com",
     price: 499,
+    additional: "50% price drop"
   },
   {
     title: "Barbecue portable grill",
     url: "https://www.car-mart.com/",
     photoUrl: "/grill.png",
-    shop: "grillshop.com",
+    sellername: "grillshop.com",
     price: 499,
   },
 ];

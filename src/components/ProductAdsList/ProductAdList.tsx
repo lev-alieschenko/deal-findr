@@ -19,8 +19,10 @@ export const ProductAdList: React.FC<{ title: string, ads: ProductAdItemProps[] 
                 title={ad.title}
                 url={ad.url}
                 photoUrl={ad.photoUrl}
-                shop={ad.shop}
+                sellername={ad.sellername}
                 price={ad.price}
+                additional={ad.additional}
+                rating={ad.rating}
               />
             </li>
           ))}
