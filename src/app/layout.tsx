@@ -1,8 +1,11 @@
+import React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+
 import { Header } from "@/components/Header/Header";
 import { AppWrapper } from "@/components/context";
+
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +23,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AppWrapper>
-          <Header />
+          <React.Suspense>
+            <Header />
+          </React.Suspense>
           <main className="pl-40 pt-4 pb-8">{children}</main>
         </AppWrapper>
       </body>
