@@ -8,13 +8,20 @@ export const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
     const stars = [];
 
     for (let i = 0; i < numberOfStars; i++) {
-      stars.push(<img key={i} src="/star.png" alt="Star" className="w-4 h-4" />);
+      stars.push(
+        <img key={i} src="/star.png" alt="Star" className="w-4 h-4" />
+      );
     }
 
     if (hasHalfStar) {
       stars.push(
         <div key="half" className="relative w-4 h-4">
-          <img src="/star.png" alt="Half Star" className="absolute h-full" style={{clipPath: 'inset(0 50% 0 0)'}} />
+          <img
+            src="/star.png"
+            alt="Half Star"
+            className="absolute h-full"
+            style={{ clipPath: "inset(0 50% 0 0)" }}
+          />
         </div>
       );
     }
@@ -22,7 +29,7 @@ export const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
     return stars;
   };
 
-  const rate = (rating / 2) > 0 ? (rating / 2) : "";
+  const rate = rating / 2 > 0 ? rating / 2 : "";
 
   return (
     <div className="flex h-4">

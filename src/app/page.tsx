@@ -5,37 +5,45 @@ const crypto = require("crypto");
 import { SearchResults } from "@/components/SearchResults/SearchResults";
 
 const oldAuth = async () => {
-  const b2bHost = "id.b2b.yahooinc.com"
+  const b2bHost = "id.b2b.yahooinc.com";
   const accessTokenURL = "https://" + b2bHost + "/identity/oauth2/access_token";
   const grantType = "client_credentials";
   const scope = "pi-api-access";
   const realm = "pi";
-  const clientAssertionType = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer";
+  const clientAssertionType =
+    "urn:ietf:params:oauth:client-assertion-type:jwt-bearer";
   const clientId = "828c4545-4189-4bb7-80e0-59ee416547b0";
   const clientSecret = "PKMTZhZz07yA5I13zu/8gmMFNirmBGH5J/9XNJYZoZbBJOs2Bg";
 
-  const token = jwt.sign({
-    "aud": `https://${b2bHost}/identity/oauth2/access_token?realm=${realm}`,
-    "iss": clientId,
-    "sub": clientId,
-    "exp": Math.floor(Date.now() / 1000) + (10 * 60),
-    "iat": Math.floor(Date.now() / 1000)
-  }, clientSecret);
+  const token = jwt.sign(
+    {
+      aud: `https://${b2bHost}/identity/oauth2/access_token?realm=${realm}`,
+      iss: clientId,
+      sub: clientId,
+      exp: Math.floor(Date.now() / 1000) + 10 * 60,
+      iat: Math.floor(Date.now() / 1000),
+    },
+    clientSecret
+  );
 
-  const response = await axios.post(accessTokenURL, {
-    "grant_type": grantType,
-    "client_assertion_type": clientAssertionType,
-    "realm": realm,
-    "scope": scope,
-    "client_assertion": token
-  }, {
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+  const response = await axios.post(
+    accessTokenURL,
+    {
+      grant_type: grantType,
+      client_assertion_type: clientAssertionType,
+      realm: realm,
+      scope: scope,
+      client_assertion: token,
+    },
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
     }
-  });
+  );
 
   console.log(response.data);
-}
+};
 
 const newAuth = () => {
   const clientId = "828c4545-4189-4bb7-80e0-59ee416547b0";
@@ -84,11 +92,12 @@ const newAuth = () => {
 };
 
 const searchRequest = async (accessToken: string) => {
-  const url = "https://api.search.yahoo.com/sdata/v3/search?appid=dd94bc47&query=car&market=en-US&uIP=45.144.115.51&serveUrl=https://google.com&features=ads.east";
+  const url =
+    "https://api.search.yahoo.com/sdata/v3/search?appid=dd94bc47&query=car&market=en-US&uIP=45.144.115.51&serveUrl=https://google.com&features=ads.east";
   const options = {
     headers: {
-      'Authorization': 'Bearer ' + accessToken
-    }
+      Authorization: "Bearer " + accessToken,
+    },
   };
 
   try {
@@ -105,38 +114,38 @@ const searchRequest = async (accessToken: string) => {
 };
 
 const getAccessToken = async (token: string) => {
-  const b2bHost = "id.b2b.yahooinc.com"
+  const b2bHost = "id.b2b.yahooinc.com";
   const accessTokenURL = "https://" + b2bHost + "/identity/oauth2/access_token";
   const grantType = "client_credentials";
   const scope = "pi-api-access";
   const realm = "pi";
-  const clientAssertionType = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer";
+  const clientAssertionType =
+    "urn:ietf:params:oauth:client-assertion-type:jwt-bearer";
 
-  const response = await axios.post(accessTokenURL, {
-    "grant_type": grantType,
-    "client_assertion_type": clientAssertionType,
-    "realm": realm,
-    "scope": scope,
-    "client_assertion": token
-  }, {
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+  const response = await axios.post(
+    accessTokenURL,
+    {
+      grant_type: grantType,
+      client_assertion_type: clientAssertionType,
+      realm: realm,
+      scope: scope,
+      client_assertion: token,
+    },
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
     }
-  });
+  );
 
   console.log(response.data);
   const res = await searchRequest(response.data.access_token);
   console.log(res);
-}
+};
 
 export default function Home() {
-  const jwt = newAuth();
-  getAccessToken(jwt);
+  // const jwt = newAuth();
+  // getAccessToken(jwt);
 
-  return <>
-    <Header />
-    <main className="pl-40 pt-4">
-      <SearchResults />
-    </main>
-  </>
+  return <SearchResults />;
 }

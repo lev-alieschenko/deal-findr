@@ -2,6 +2,9 @@
 
 import { TextAdList } from "../TextAdsList/TextAdList";
 import { ProductAdList } from "../ProductAdsList/ProductAdList";
+import { RelatedSearchList } from "../RelatedSearches/RelatedSearchList";
+import { useSearchParams } from "next/navigation";
+import { useAppContext } from "../context";
 
 const DUMMY_TEXT_ADs = [
   {
@@ -38,7 +41,7 @@ const DUMMY_TEXT_ADs = [
 
 const DUMMY_PRODUCT_ADs = [
   {
-    title: "Barbecue portable grill",
+    title: "Amazing driving car",
     url: "https://www.car-mart.com/",
     photoUrl: "/car.jpg",
     sellername: "grillshop.com",
@@ -46,7 +49,7 @@ const DUMMY_PRODUCT_ADs = [
     rating: 10,
   },
   {
-    title: "Barbecue portable grill",
+    title: "Amazing driving car",
     url: "https://www.car-mart.com/",
     photoUrl: "/car.jpg",
     sellername: "grillshop.com",
@@ -54,7 +57,7 @@ const DUMMY_PRODUCT_ADs = [
     rating: 5,
   },
   {
-    title: "Barbecue portable grill",
+    title: "Amazing driving car",
     url: "https://www.car-mart.com/",
     photoUrl: "/car.jpg",
     sellername: "grillshop.com",
@@ -62,7 +65,7 @@ const DUMMY_PRODUCT_ADs = [
     additional: "50% price drop",
   },
   {
-    title: "Barbecue portable grill",
+    title: "Amazing driving car",
     url: "https://www.car-mart.com/",
     photoUrl: "/car.jpg",
     sellername: "grillshop.com",
@@ -70,7 +73,7 @@ const DUMMY_PRODUCT_ADs = [
     rating: 7,
   },
   {
-    title: "Barbecue portable grill",
+    title: "Amazing driving car",
     url: "https://www.car-mart.com/",
     photoUrl: "/car.jpg",
     sellername: "grillshop.com",
@@ -78,7 +81,7 @@ const DUMMY_PRODUCT_ADs = [
     rating: 0,
   },
   {
-    title: "Barbecue portable grill",
+    title: "Amazing driving car",
     url: "https://www.car-mart.com/",
     photoUrl: "/car.jpg",
     sellername: "grillshop.com",
@@ -86,7 +89,7 @@ const DUMMY_PRODUCT_ADs = [
     additional: "50% price drop",
   },
   {
-    title: "Barbecue portable grill",
+    title: "Amazing driving car",
     url: "https://www.car-mart.com/",
     photoUrl: "/car.jpg",
     sellername: "grillshop.com",
@@ -94,7 +97,7 @@ const DUMMY_PRODUCT_ADs = [
     additional: "50% price drop",
   },
   {
-    title: "Barbecue portable grill",
+    title: "Amazing driving car",
     url: "https://www.car-mart.com/",
     photoUrl: "/car.jpg",
     sellername: "grillshop.com",
@@ -113,8 +116,9 @@ const DUMMY_RELATED_SEARCHES = [
 ];
 
 export const SearchResults = () => {
-  return (
-    <div>
+  const { query, setQuery } = useAppContext();
+  const content = query ? (
+    <>
       <div className="pl-5">
         <span className="text-sm text-gray-600 inline-block overflow-hidden whitespace-nowrap">
           About 304 000 000 results
@@ -123,14 +127,13 @@ export const SearchResults = () => {
       <div className="w-full flex flex-row pt-2">
         <TextAdList ads={DUMMY_TEXT_ADs} />
         <div className="min-w-[500px] max-w-[500px] ml-28">
-          <ProductAdList
-            title="Shops for Portable Barbecue Grill"
-            ads={DUMMY_PRODUCT_ADs}
-          />
+          <ProductAdList title={`Shops for ${query}`} ads={DUMMY_PRODUCT_ADs} />
+          <RelatedSearchList queries={DUMMY_RELATED_SEARCHES} />
         </div>
       </div>
-    </div>
+    </>
+  ) : (
+    <p>No content</p>
   );
+  return <div>{content}</div>;
 };
-
-
