@@ -1,0 +1,1 @@
+export const TEXT_ADS_PER_PAGE = 10;

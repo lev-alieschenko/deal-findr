@@ -4,34 +4,38 @@ import { Input } from "@material-tailwind/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
-import { useState } from "react";
-import { TabBar } from "../common/TabBar";
+import { useState, useEffect } from "react";
+import { TabBar, setUrlParameter} from "../common";
 import { useSearchParams } from "next/navigation";
 import { useAppContext } from "../context";
 
 export const Header = () => {
   const searchParams = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState(
-    searchParams.get("query") || ""
-  );
+  const [inputValue, setInputValue] = useState("");
   const { query, setQuery } = useAppContext();
+
+  useEffect(() => {
+    const searchQuery = searchParams.get("query");
+    if (searchQuery) {
+      setInputValue(searchQuery);
+      setQuery(searchQuery);
+    }
+  }, []);
+
+  useEffect(() => {
+    setInputValue(query);
+  }, [query]);
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const searchParams = new URLSearchParams();
-    if (searchQuery) {
-      searchParams.set("query", searchQuery);
-    }
-    setQuery(searchQuery);
-    const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
-
-    window.history.pushState({}, "", newUrl);
+    setUrlParameter("query", inputValue);
+    setQuery(inputValue);
     // const res = await fetch(`https://api.search.yahoo.com/sdata/v3/search?appid=rOjuMFbXnnxDFp8KhvbeG0DGzr7yUAQLuG1ReMDk4lq9OgrqjA&query=${searchQuery}&market=en-US&uIP=a3c1864c-5592-497b-85b7-512ac7c18e48&serveUrl=`);
     // console.log(res);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
+    setInputValue(e.target.value);
   };
 
   return (
@@ -56,7 +60,7 @@ export const Header = () => {
                   <Input
                     size="lg"
                     onChange={handleInputChange}
-                    value={searchQuery}
+                    value={inputValue}
                     label="Search"
                     icon={<FontAwesomeIcon icon={faSearch} />}
                   />

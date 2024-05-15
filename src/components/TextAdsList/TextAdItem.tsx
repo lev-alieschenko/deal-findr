@@ -17,7 +17,7 @@ export const TextAdItem: React.FC<TextAdItemProps> = ({
   description =
     description.length > 175 ? description.slice(0, 176) + " ..." : description;
   return (
-    <div className="w-full">
+    <div className="w-full mb-4">
       <h2>
         <a
           className="text-xl text-dark-blue hover:text-dark-orange hover:underline"

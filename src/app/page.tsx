@@ -1,8 +1,7 @@
-import { Header } from "@/components/Header/Header";
 import jwt from "jsonwebtoken";
 import axios from "axios";
 const crypto = require("crypto");
-import { SearchResults } from "@/components/SearchResults/SearchResults";
+import { SearchResults } from "@/components/SearchResults";
 
 const oldAuth = async () => {
   const b2bHost = "id.b2b.yahooinc.com";

@@ -8,7 +8,7 @@ export const ProductAdList: React.FC<{
   ads: ProductAdItemProps[];
 }> = ({ title, ads }) => {
   return (
-    <div className="w-full h-fit pl-2 pt-2 pr-4 pb-4 border-t-2 border-l-2 border-gray-800 border-r border-b border-gray-300">
+    <div className="w-full mb-4 h-fit pl-2 pt-2 pr-4 pb-4 border-t-2 border-l-2 border-gray-800 border-r border-b border-gray-300">
       <div className="py-1 flex flex-row justify-between">
         <h1 className="leading-8">{title}</h1>
         <p className="text-sm text-gray-400 leading-8">Ads</p>

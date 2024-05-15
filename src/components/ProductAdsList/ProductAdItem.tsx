@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { StarRating } from "../ui/StarRating";
+import { StarRating } from "../ui";
 
 export interface ProductAdItemProps {
   title: string;

@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 
 import { Header } from "@/components/Header/Header";
 import { AppWrapper } from "@/components/context";
+import { Footer } from "@/components/Footer/Footer";
 
 import "./globals.css";
 
@@ -21,12 +22,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} min-h-screen relative`}>
         <AppWrapper>
           <React.Suspense>
             <Header />
           </React.Suspense>
-          <main className="pl-40 pt-4 pb-8">{children}</main>
+          <main className="pl-40 pt-4 pb-12">{children}</main>
+          <Footer />
         </AppWrapper>
       </body>
     </html>
