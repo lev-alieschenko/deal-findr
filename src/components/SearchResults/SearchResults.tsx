@@ -179,7 +179,12 @@ const DUMMY_RELATED_SEARCHES = [
   "rent a big car"
 ];
 
-export const SearchResults = () => {
+interface Props {
+  results: any
+}
+
+export const SearchResults = ({results}: Props) => {
+  console.log({results})
   const { query, setQuery } = useAppContext();
   const [currentPage, setCurrentPage] = useState(1);
   const [textAds, setTextAds] = useState(DUMMY_TEXT_ADs.slice(0, 10));
