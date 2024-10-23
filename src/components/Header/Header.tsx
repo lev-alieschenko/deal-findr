@@ -1,21 +1,22 @@
-"use client";
+'use client';
 
-import { Input } from "@material-tailwind/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import Image from "next/image";
-import { useState, useEffect } from "react";
-import { TabBar, setUrlParameter} from "../common";
-import { useSearchParams } from "next/navigation";
-import { useAppContext } from "../context";
+import { Input } from '@material-tailwind/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import Image from 'next/image';
+import { useState, useEffect } from 'react';
+import { TabBar, setUrlParameter } from '../common';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useAppContext } from '../context';
 
 export const Header = () => {
   const searchParams = useSearchParams();
-  const [inputValue, setInputValue] = useState("");
+  const router = useRouter();
+  const [inputValue, setInputValue] = useState('');
   const { query, setQuery } = useAppContext();
 
   useEffect(() => {
-    const searchQuery = searchParams.get("query");
+    const searchQuery = searchParams.get('query');
     if (searchQuery) {
       setInputValue(searchQuery);
       setQuery(searchQuery);
@@ -28,10 +29,13 @@ export const Header = () => {
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setUrlParameter("query", inputValue);
+    setUrlParameter('query', inputValue);
     setQuery(inputValue);
-    // const res = await fetch(`https://api.search.yahoo.com/sdata/v3/search?appid=rOjuMFbXnnxDFp8KhvbeG0DGzr7yUAQLuG1ReMDk4lq9OgrqjA&query=${searchQuery}&market=en-US&uIP=a3c1864c-5592-497b-85b7-512ac7c18e48&serveUrl=`);
-    // console.log(res);
+
+    // Trigger a new route with the updated query
+    const currentParams = new URLSearchParams(searchParams.toString());
+    currentParams.set('query', inputValue);
+    router.push(`/?${currentParams.toString()}`);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,15 +44,15 @@ export const Header = () => {
 
   return (
     <header>
-      <div className="w-100 border-b border-gray-300">
-        <div className="flex flex-row items-center md:items-left">
+      <div className='w-100 border-b border-gray-300'>
+        <div className='flex flex-row items-center md:items-left'>
           <div>
-            <div className="ml-8 flex flex-row h-20 items-center justify-center">
-              <div className="pr-8">
-                <a href="/">
+            <div className='ml-8 flex flex-row h-20 items-center justify-center'>
+              <div className='pr-8'>
+                <a href='/'>
                   <Image
-                    src="/deal-findr.png"
-                    alt="DealFinder logo"
+                    src='/deal-findr.png'
+                    alt='DealFinder logo'
                     width={96}
                     height={40}
                     priority
@@ -56,12 +60,12 @@ export const Header = () => {
                 </a>
               </div>
               <form onSubmit={submitHandler}>
-                <div className="w-full lg:w-[650px] shadow-md">
+                <div className='w-full lg:w-[650px] shadow-md'>
                   <Input
-                    size="lg"
+                    size='lg'
                     onChange={handleInputChange}
                     value={inputValue}
-                    label="Search"
+                    label='Search'
                     icon={<FontAwesomeIcon icon={faSearch} />}
                   />
                 </div>

@@ -1,232 +1,143 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { TextAdList } from "../TextAdsList";
-import { ProductAdList } from "../ProductAdsList";
-import { RelatedSearchList } from "../RelatedSearches";
-import { useAppContext } from "../context";
-import { PaginationControl } from "../PaginationControl";
-import { TEXT_ADS_PER_PAGE } from "../common/constants";
-import { RelatedSearchBarList } from "../RelatedSearches";
+import { useEffect, useState } from 'react';
+import { TextAdList } from '../TextAdsList';
+import { useAppContext } from '../context';
+import { PaginationControl } from '../PaginationControl';
+import { TEXT_ADS_PER_PAGE } from '../common/constants';
+import ProductAdList from '../ProductAdsList/ProductAdList';
 
-const DUMMY_TEXT_ADs = [
-  {
-    title: "America’s Car-Mart cat car car car car car car car car carcarcar",
-    url: "https://www.car-mart.com/",
-    description:
-      "Stress-Free Used Car Buying — Bad credit doesn’t define you. Drive away today with a low down payment on a great car. njfkdls nfjdks fnjdks nfjd sknf jdks mdkslam dksla; mdksla",
-  },
-  {
-    title: "America’s Car-Mart",
-    url: "https://www.car-mart.com/",
-    description:
-      "Stress-Free Used Car Buying — Bad credit doesn’t define you. Drive away today with a low down payment on a great car.",
-  },
-  {
-    title: "America’s Car-Mart",
-    url: "https://www.car-mart.com/",
-    description:
-      "Stress-Free Used Car Buying — Bad credit doesn’t define you. Drive away today with a low down payment on a great car.",
-  },
-  {
-    title: "America’s Car-Mart",
-    url: "https://www.car-mart.com/",
-    description:
-      "Stress-Free Used Car Buying — Bad credit doesn’t define you. Drive away today with a low down payment on a great car.",
-  },
-  {
-    title: "America’s Car-Mart",
-    url: "https://www.car-mart.com/",
-    description:
-      "Stress-Free Used Car Buying — Bad credit doesn’t define you. Drive away today with a low down payment on a great car.",
-  },
-  {
-    title: "America’s Car-Mart",
-    url: "https://www.car-mart.com/",
-    description:
-      "Stress-Free Used Car Buying — Bad credit doesn’t define you. Drive away today with a low down payment on a great car.",
-  },
-  {
-    title: "America’s Car-Mart",
-    url: "https://www.car-mart.com/",
-    description:
-      "Stress-Free Used Car Buying — Bad credit doesn’t define you. Drive away today with a low down payment on a great car.",
-  },
-  {
-    title: "America’s Car-Mart",
-    url: "https://www.car-mart.com/",
-    description:
-      "Stress-Free Used Car Buying — Bad credit doesn’t define you. Drive away today with a low down payment on a great car.",
-  },
-  {
-    title: "America’s Car-Mart",
-    url: "https://www.car-mart.com/",
-    description:
-      "Stress-Free Used Car Buying — Bad credit doesn’t define you. Drive away today with a low down payment on a great car.",
-  },
-  {
-    title: "America’s Car-Mart",
-    url: "https://www.car-mart.com/",
-    description:
-      "Stress-Free Used Car Buying — Bad credit doesn’t define you. Drive away today with a low down payment on a great car.",
-  },
-  {
-    title: "America’s Car-Mart",
-    url: "https://www.car-mart.com/",
-    description:
-      "Stress-Free Used Car Buying — Bad credit doesn’t define you. Drive away today with a low down payment on a great car.",
-  },
-  {
-    title: "America’s Car-Mart",
-    url: "https://www.car-mart.com/",
-    description:
-      "Stress-Free Used Car Buying — Bad credit doesn’t define you. Drive away today with a low down payment on a great car.",
-  },
-  {
-    title: "America’s Car-Mart",
-    url: "https://www.car-mart.com/",
-    description:
-      "Stress-Free Used Car Buying — Bad credit doesn’t define you. Drive away today with a low down payment on a great car.",
-  },
-  {
-    title: "America’s Car-Mart",
-    url: "https://www.car-mart.com/",
-    description:
-      "Stress-Free Used Car Buying — Bad credit doesn’t define you. Drive away today with a low down payment on a great car.",
-  },
-  {
-    title: "America’s Car-Mart",
-    url: "https://www.car-mart.com/",
-    description:
-      "Stress-Free Used Car Buying — Bad credit doesn’t define you. Drive away today with a low down payment on a great car.",
-  },
-];
-
-const DUMMY_PRODUCT_ADs = [
-  {
-    title: "Amazing driving car",
-    url: "https://www.car-mart.com/",
-    photoUrl: "/car.jpg",
-    sellername: "grillshop.com",
-    price: 499,
-    rating: 10,
-  },
-  {
-    title: "Amazing driving car",
-    url: "https://www.car-mart.com/",
-    photoUrl: "/car.jpg",
-    sellername: "grillshop.com",
-    price: 499,
-    rating: 5,
-  },
-  {
-    title: "Amazing driving car",
-    url: "https://www.car-mart.com/",
-    photoUrl: "/car.jpg",
-    sellername: "grillshop.com",
-    price: 499,
-    additional: "50% price drop",
-  },
-  {
-    title: "Amazing driving car",
-    url: "https://www.car-mart.com/",
-    photoUrl: "/car.jpg",
-    sellername: "grillshop.com",
-    price: 499,
-    rating: 7,
-  },
-  {
-    title: "Amazing driving car",
-    url: "https://www.car-mart.com/",
-    photoUrl: "/car.jpg",
-    sellername: "grillshop.com",
-    price: 499,
-    rating: 0,
-  },
-  {
-    title: "Amazing driving car",
-    url: "https://www.car-mart.com/",
-    photoUrl: "/car.jpg",
-    sellername: "grillshop.com",
-    price: 499,
-    additional: "50% price drop",
-  },
-  {
-    title: "Amazing driving car",
-    url: "https://www.car-mart.com/",
-    photoUrl: "/car.jpg",
-    sellername: "grillshop.com",
-    price: 499,
-    additional: "50% price drop",
-  },
-  {
-    title: "Amazing driving car",
-    url: "https://www.car-mart.com/",
-    photoUrl: "/car.jpg",
-    sellername: "grillshop.com",
-    price: 499,
-  },
-];
-
-const DUMMY_RELATED_SEARCHES = [
-  "buy car buy car buy car buy car buy car buy car buy car buy cae",
-  "usa cars for sale",
-  "car simulator 2",
-  "download car for sale",
-  "formula 1",
-  "exotic lamborghini car",
-  "rent a car",
-  "rent a big car"
-];
-
-interface Props {
-  results: any
+export interface SearchResultsProps {
+  results: {
+    response?: {
+      search?: {
+        results?: {
+          'ads.north'?: {
+            data: Array<{
+              title: string;
+              url: string;
+              abstract: string;
+              displayUrl: string;
+              siteLinks?: {
+                value: Array<{
+                  text: string;
+                  url: string;
+                  snippet?: string;
+                  snippet2?: string;
+                }>;
+              };
+              iconUrl?: string;
+              merchantRating?: {
+                domain: string;
+                rating: number;
+                numRating: number;
+              };
+            }>;
+          };
+          'ads.east'?: {
+            data: any[];
+          };
+          'ads.pla'?: {
+            data: Array<{
+              title: string;
+              url: string;
+              thumbnailUrl: string;
+              sellername: string;
+              originalprice: string;
+              abstract: string;
+              merchantRating?: {
+                rating: number;
+              };
+            }>;
+          };
+        };
+      };
+    };
+  };
 }
 
-export const SearchResults = ({results}: Props) => {
-  console.log({results})
+export const SearchResults: React.FC<SearchResultsProps> = ({ results }) => {
   const { query, setQuery } = useAppContext();
   const [currentPage, setCurrentPage] = useState(1);
-  const [textAds, setTextAds] = useState(DUMMY_TEXT_ADs.slice(0, 10));
+  const [isLoading, setIsLoading] = useState(false);
+  const [totalResults, setTotalResults] = useState(0);
+
+  const transformAdsData = () => {
+    const northAds =
+      results.response?.search?.results?.['ads.north']?.data || [];
+    const eastAds = results.response?.search?.results?.['ads.east']?.data || [];
+
+    return [...northAds, ...eastAds].map((ad) => ({
+      title: ad.title,
+      url: ad.url,
+      description: ad.abstract,
+      displayUrl: ad.displayUrl,
+      siteLinks: ad.siteLinks?.value,
+      merchantRating: ad.merchantRating,
+      iconUrl: ad.iconUrl,
+      displayDomain: ad.displayDomain,
+    }));
+  };
+
+  const allAds = transformAdsData();
+  const totalPages = Math.max(Math.ceil(allAds.length / TEXT_ADS_PER_PAGE), 1);
+  const plaData = results.response?.search?.results?.['ads.pla'];
+
+  console.log(results);
 
   useEffect(() => {
-    const startIndex = (currentPage - 1) * TEXT_ADS_PER_PAGE;
-    const endIndex = startIndex + TEXT_ADS_PER_PAGE;
-    setTextAds(DUMMY_TEXT_ADs.slice(startIndex, endIndex));
-  }, [currentPage]);
+    setCurrentPage(1);
+    setTotalResults(allAds.length);
+  }, [query, allAds.length]);
 
-  const content = query ? (
+  if (!query) {
+    return <p>No content</p>;
+  }
+
+  return (
     <>
-      <div className="pl-5">
-        <span className="text-sm text-gray-600 inline-block overflow-hidden whitespace-nowrap">
-          About 304 000 000 results
+      <div className='pl-5'>
+        <span className='text-sm text-gray-600 inline-block overflow-hidden whitespace-nowrap'>
+          {isLoading ? 'Loading...' : `About ${totalResults} results`}
         </span>
       </div>
-      <div className="w-full flex flex-row">
-        <div>
-          <TextAdList ads={textAds} />
-          <RelatedSearchBarList queries={DUMMY_RELATED_SEARCHES} />
-        </div>
-        <div className="min-w-[500px] max-w-[500px] ml-28">
-          {currentPage === 1 && (
-            <ProductAdList
-              title={`Shops for ${query}`}
-              ads={DUMMY_PRODUCT_ADs}
-            />
+      <div className='w-full flex flex-row'>
+        <div className='flex-1'>
+          {isLoading ? (
+            <div className='flex justify-center items-center h-32'>
+              <span>Loading results...</span>
+            </div>
+          ) : (
+            <>
+              <TextAdList
+                ads={allAds
+                  .slice(
+                    (currentPage - 1) * TEXT_ADS_PER_PAGE,
+                    currentPage * TEXT_ADS_PER_PAGE
+                  )
+                  .map((ad) => ({
+                    title: ad.title,
+                    url: ad.url,
+                    description: ad.description,
+                    displayDomain: ad.displayDomain,
+                    iconUrl: ad.iconUrl,
+                  }))}
+              />
+            </>
           )}
-          <RelatedSearchList queries={DUMMY_RELATED_SEARCHES} />
+        </div>
+        <div className='min-w-[500px] max-w-[500px] mr-40'>
+          {currentPage === 1 && plaData && <ProductAdList plaData={plaData} />}
         </div>
       </div>
-      <div className="py-8">
+
+      <div className='py-8'>
         <PaginationControl
-          pages={9}
+          pages={totalPages}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
         />
       </div>
     </>
-  ) : (
-    <p>No content</p>
   );
-  return <div>{content}</div>;
 };
