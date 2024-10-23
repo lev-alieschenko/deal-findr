@@ -1,7 +1,7 @@
 import { SearchResultsProps } from '@/components/SearchResults';
-import axios from 'axios';
 import * as jose from 'jose';
 // https://deal-findr.pages.dev/
+
 export const CONFIG = {
   clientId: '8a5a1638-9231-45a1-89e5-086f41e1f86b',
   clientSecret: 'xwlzSxWo0XJSHf7U/I1mAFjg7fv6NwxhaYvp8S5/HVkF4suX4Q',
@@ -62,22 +62,26 @@ export const getAccessToken = async (jwt: string): Promise<string> => {
   });
 
   try {
-    const response = await axios.post<AccessTokenResponse>(
-      CONFIG.host + CONFIG.path,
-      identityBody.toString(),
-      {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          Accept: 'application/json',
-        },
-      }
-    );
+    const response = await fetch(`${CONFIG.host}${CONFIG.path}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Accept: 'application/json',
+      },
+      body: identityBody.toString(),
+    });
 
-    if (!response.data.access_token) {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data: AccessTokenResponse = await response.json();
+
+    if (!data.access_token) {
       throw new Error('No access token in response');
     }
 
-    return response.data.access_token;
+    return data.access_token;
   } catch (error: any) {
     console.error('Access token request failed:', error);
     throw new Error(`Failed to obtain access token: ${error.message}`);
@@ -123,7 +127,7 @@ export const searchRequest = async (
   });
 
   try {
-    const response = await axios.get<any>(searchUrl.toString(), {
+    const response = await fetch(searchUrl.toString(), {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         Accept: 'application/json',
@@ -131,21 +135,18 @@ export const searchRequest = async (
         'Cache-Control': 'no-cache',
         Pragma: 'no-cache',
       },
-      timeout: 10000,
     });
 
-    return response.data;
-  } catch (error: any) {
-    if (axios.isAxiosError(error)) {
-      console.error('Search request failed:', {
-        status: error.response?.status,
-        data: error.response?.data.response.status,
-      });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      throw new Error(
+        errorData?.error?.message || `HTTP error! status: ${response.status}`
+      );
     }
-    throw new Error(
-      error.response?.data?.error?.message ||
-        error.message ||
-        'Search request failed'
-    );
+
+    return response.json();
+  } catch (error: any) {
+    console.error('Search request failed:', error);
+    throw new Error(error.message || 'Search request failed');
   }
 };
