@@ -1,12 +1,13 @@
 import { Suspense } from 'react';
 import { SearchResults } from '@/components/SearchResults';
-
 import { ErrorDisplay } from '@/components/Error/Error';
 import {
   generateJWT,
   getAccessToken,
   searchRequest,
 } from '@/shared/utils/search-api';
+
+export const runtime = 'edge';
 
 const SearchResultsLoading = () => (
   <div className='p-4'>
@@ -40,15 +41,14 @@ async function SearchContent({
   if (searchParams.query == undefined) {
     return <p className='font-black text-3xl'>Search ads!</p>;
   }
-  if (searchParams.query !== undefined) {
-    try {
-      const query = searchParams.query || '';
-      const jwt = await generateJWT();
-      const accessToken = await getAccessToken(jwt);
-      const searchResults = await searchRequest(accessToken, query);
-      return <SearchResults results={searchResults} />;
-    } catch (error: any) {
-      return <ErrorDisplay error={error} />;
-    }
+
+  try {
+    const query = searchParams.query;
+    const jwt = await generateJWT();
+    const accessToken = await getAccessToken(jwt);
+    const searchResults = await searchRequest(accessToken, query);
+    return <SearchResults results={searchResults} />;
+  } catch (error: any) {
+    return <ErrorDisplay error={error} />;
   }
 }
