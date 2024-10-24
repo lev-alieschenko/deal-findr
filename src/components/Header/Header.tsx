@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { TabBar, setUrlParameter } from '../common';
+import { setUrlParameter } from '../common';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAppContext } from '../context';
 
@@ -27,15 +27,20 @@ export const Header = () => {
     setInputValue(query);
   }, [query]);
 
+  const handleSearch = () => {
+    if (inputValue.trim()) {
+      setUrlParameter('query', inputValue);
+      setQuery(inputValue);
+
+      const currentParams = new URLSearchParams(searchParams.toString());
+      currentParams.set('query', inputValue);
+      router.push(`/?${currentParams.toString()}`);
+    }
+  };
+
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setUrlParameter('query', inputValue);
-    setQuery(inputValue);
-
-    // Trigger a new route with the updated query
-    const currentParams = new URLSearchParams(searchParams.toString());
-    currentParams.set('query', inputValue);
-    router.push(`/?${currentParams.toString()}`);
+    handleSearch();
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,35 +48,40 @@ export const Header = () => {
   };
 
   return (
-    <header>
-      <div className='w-100 border-b border-gray-300'>
-        <div className='flex flex-row items-center md:items-left'>
-          <div>
-            <div className='ml-8 flex flex-row h-20 items-center justify-center'>
-              <div className='pr-8'>
-                <a href='/'>
-                  <Image
-                    src='/deal-findr.png'
-                    alt='DealFinder logo'
-                    width={96}
-                    height={40}
-                    priority
-                  />
-                </a>
+    <header className='w-full pt-4'>
+      <div className='container mx-auto px-4'>
+        <div className='flex flex-col md:flex-row md:items-center'>
+          <div className='flex justify-center md:justify-start py-4 md:py-0'>
+            <a href='/' className='block'>
+              <Image
+                src='/deal-findr.png'
+                alt='DealFinder logo'
+                width={96}
+                height={40}
+                priority
+                className='w-auto h-auto'
+              />
+            </a>
+          </div>
+          <div className='w-full md:ml-8 pb-4 md:pb-0'>
+            <form onSubmit={submitHandler} className='w-full'>
+              <div className='w-full md:max-w-[650px] shadow-md'>
+                <Input
+                  size='lg'
+                  onChange={handleInputChange}
+                  value={inputValue}
+                  label='Search'
+                  icon={
+                    <FontAwesomeIcon
+                      className='cursor-pointer hover:text-blue-500 transition-colors'
+                      icon={faSearch}
+                      onClick={handleSearch}
+                    />
+                  }
+                  className='w-full'
+                />
               </div>
-              <form onSubmit={submitHandler}>
-                <div className='w-full lg:w-[650px] shadow-md'>
-                  <Input
-                    size='lg'
-                    onChange={handleInputChange}
-                    value={inputValue}
-                    label='Search'
-                    icon={<FontAwesomeIcon icon={faSearch} />}
-                  />
-                </div>
-              </form>
-            </div>
-            {query && <TabBar />}
+            </form>
           </div>
         </div>
       </div>

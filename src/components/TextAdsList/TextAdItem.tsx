@@ -1,4 +1,5 @@
 'use client';
+
 import React from 'react';
 import Image from 'next/image';
 
@@ -32,15 +33,33 @@ export const TextAdItem: React.FC<TextAdItemProps> = ({
     let truncated = '';
     let currentLength = 0;
     let inTag = false;
+    let currentTag = '';
 
     for (let i = 0; i < html.length; i++) {
       const char = html[i];
 
-      if (char === '<') inTag = true;
-      if (!inTag) currentLength++;
-      if (char === '>') inTag = false;
+      if (char === '<') {
+        inTag = true;
+        currentTag = '';
+      }
 
-      truncated += char;
+      if (inTag) {
+        currentTag += char;
+      }
+
+      if (!inTag) {
+        currentLength++;
+      }
+
+      if (char === '>') {
+        inTag = false;
+        truncated += currentTag;
+        continue;
+      }
+
+      if (!inTag) {
+        truncated += char;
+      }
 
       if (currentLength >= maxLength && !inTag) {
         truncated += ' ...';
@@ -49,20 +68,56 @@ export const TextAdItem: React.FC<TextAdItemProps> = ({
     }
 
     const matches = truncated.match(/<([^/][^>]*?)>/g) || [];
-    const openTags = matches.map((tag) => tag.replace(/<([^ >]*)[^>]*>/, '$1'));
+    const openTags = matches
+      .map((tag) => tag.match(/<([^ >]*)/)?.[1] || '')
+      .filter(Boolean);
 
     for (let i = openTags.length - 1; i >= 0; i--) {
-      if (!truncated.includes(`</${openTags[i]}`)) {
-        truncated += `</${openTags[i]}>`;
-      }
+      truncated += `</${openTags[i]}>`;
     }
 
     return truncated;
   };
 
+  const processDescription = (desc: string, maxLength: number) => {
+    const allowedTags = ['strong', 'em', 'b', 'i', 'span'];
+
+    allowedTags.forEach((tag) => {
+      desc = desc.replace(new RegExp(`</${tag}>`, 'gi'), `||/${tag}||`);
+    });
+
+    allowedTags.forEach((tag) => {
+      desc = desc.replace(new RegExp(`<${tag}>`, 'gi'), `||${tag}||`);
+    });
+
+    desc = desc.replace(/<[^>]+>/g, '');
+
+    if (stripHtml(desc).length > maxLength) {
+      let stripped = '';
+      let length = 0;
+      let parts = desc.split(' ');
+
+      for (let part of parts) {
+        if (length + stripHtml(part).length > maxLength) {
+          break;
+        }
+        stripped += (stripped ? ' ' : '') + part;
+        length += stripHtml(part).length;
+      }
+
+      desc = stripped + ' ...';
+    }
+
+    allowedTags.forEach((tag) => {
+      desc = desc.replace(new RegExp(`\\|\\|${tag}\\|\\|`, 'g'), `<${tag}>`);
+      desc = desc.replace(new RegExp(`\\|\\|/${tag}\\|\\|`, 'g'), `</${tag}>`);
+    });
+
+    return desc;
+  };
+
   const truncatedTitle = truncateHtml(title, 61);
-  const truncatedDescription =
-    description.length > 175 ? description.slice(0, 176) + ' ...' : description;
+  const processedDescription = processDescription(description, 175);
 
   return (
     <div className='w-full mb-4'>
@@ -85,7 +140,10 @@ export const TextAdItem: React.FC<TextAdItemProps> = ({
           dangerouslySetInnerHTML={{ __html: truncatedTitle }}
         />
       </h2>
-      <p className='text-sm text-gray-800'>{truncatedDescription}</p>
+      <p
+        className='text-sm text-gray-800'
+        dangerouslySetInnerHTML={{ __html: processedDescription }}
+      />
     </div>
   );
 };

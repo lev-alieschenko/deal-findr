@@ -57,7 +57,7 @@ export interface SearchResultsProps {
 }
 
 export const SearchResults: React.FC<SearchResultsProps> = ({ results }) => {
-  const { query, setQuery } = useAppContext();
+  const { query } = useAppContext();
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [totalResults, setTotalResults] = useState(0);
@@ -83,8 +83,6 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ results }) => {
   const totalPages = Math.max(Math.ceil(allAds.length / TEXT_ADS_PER_PAGE), 1);
   const plaData = results.response?.search?.results?.['ads.pla'];
 
-  console.log(results);
-
   useEffect(() => {
     setCurrentPage(1);
     setTotalResults(allAds.length);
@@ -95,20 +93,27 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ results }) => {
   }
 
   return (
-    <>
-      <div className='pl-5'>
+    <div className='w-full px-4 md:px-0'>
+      <div className='pl-2 md:pl-5'>
         <span className='text-sm text-gray-600 inline-block overflow-hidden whitespace-nowrap'>
           {isLoading ? 'Loading...' : `About ${totalResults} results`}
         </span>
       </div>
-      <div className='w-full flex flex-row'>
-        <div className='flex-1'>
+
+      <div className='w-full flex flex-col md:flex-row'>
+        <div className='w-full md:flex-1'>
           {isLoading ? (
             <div className='flex justify-center items-center h-32'>
               <span>Loading results...</span>
             </div>
           ) : (
             <>
+              {currentPage === 1 && plaData && (
+                <div className='w-full'>
+                  <ProductAdList plaData={plaData} />
+                </div>
+              )}
+
               <TextAdList
                 ads={allAds
                   .slice(
@@ -126,18 +131,15 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ results }) => {
             </>
           )}
         </div>
-        <div className='min-w-[500px] max-w-[500px] mr-40'>
-          {currentPage === 1 && plaData && <ProductAdList plaData={plaData} />}
-        </div>
       </div>
 
-      <div className='py-8'>
+      <div className='py-4 md:py-8'>
         <PaginationControl
           pages={totalPages}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
         />
       </div>
-    </>
+    </div>
   );
 };
