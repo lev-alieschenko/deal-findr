@@ -8,7 +8,7 @@ export const CONFIG = {
   host: 'https://id.b2b.yahooinc.com',
   path: '/identity/oauth2/access_token',
   realm: 'sagw',
-  searchAppId: 'dd94bc47',
+  searchAppId: 'ad0ff316',
   serveUrl: 'https://deal-findr.pages.dev/',
 } as const;
 
