@@ -22,7 +22,7 @@ const SearchResultsLoading = () => (
 export default async function Home({
   searchParams,
 }: {
-  searchParams: { query?: string };
+  searchParams: { query?: string; subid?: string };
 }) {
   return (
     <main>
@@ -36,17 +36,17 @@ export default async function Home({
 async function SearchContent({
   searchParams,
 }: {
-  searchParams: { query?: string };
+  searchParams: { query?: string; subid?: string };
 }) {
   if (searchParams.query == undefined) {
     return <p className='font-black text-3xl'>Search ads!</p>;
   }
 
   try {
-    const query = searchParams.query;
+    const { query, subid } = searchParams;
     const jwt = await generateJWT();
     const accessToken = await getAccessToken(jwt);
-    const searchResults = await searchRequest(accessToken, query);
+    const searchResults = await searchRequest(accessToken, query, subid);
     return <SearchResults results={searchResults} />;
   } catch (error: any) {
     return <ErrorDisplay error={error} />;

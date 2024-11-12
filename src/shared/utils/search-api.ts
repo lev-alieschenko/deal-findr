@@ -1,6 +1,5 @@
 import { SearchResultsProps } from '@/components/SearchResults';
 import * as jose from 'jose';
-// https://deal-findr.pages.dev/
 
 export const CONFIG = {
   clientId: '8a5a1638-9231-45a1-89e5-086f41e1f86b',
@@ -91,6 +90,7 @@ export const getAccessToken = async (jwt: string): Promise<string> => {
 export const searchRequest = async (
   accessToken: string,
   query: string,
+  subid?: string,
   page: number = 1,
   resultsPerPage: number = 10
 ): Promise<any> => {
@@ -120,6 +120,7 @@ export const searchRequest = async (
     'ads.pla-eliteBadge': '1',
     'ads.pla-priceDrop': '1',
     'ads-page': page.toString(),
+    ...(subid && { subid: '1' }),
   };
 
   Object.entries(searchParams).forEach(([key, value]) => {
