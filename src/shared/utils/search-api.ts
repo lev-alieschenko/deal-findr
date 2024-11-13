@@ -104,7 +104,7 @@ export const searchRequest = async (
     uIP: ip,
     serveUrl: CONFIG.serveUrl,
     features: 'ads.pla,ads,ads.north,ads.east',
-    adSourceTag: 'api',
+    adSourceTag: 'brandclick_s2s_sapip_3161_goog_dealfindr2',
     adType: 'text,pla',
     'ads-review': '1',
     'ads-sitelink': '1',
