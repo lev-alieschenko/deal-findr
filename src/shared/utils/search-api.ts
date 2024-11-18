@@ -105,7 +105,7 @@ export const searchRequest = async (
     serveUrl: CONFIG.serveUrl,
     features: 'ads.pla,ads,ads.north,ads.east',
     adSourceTag: 'brandclick_s2s_sapip_3161_goog_dealfindr2',
-    adType: 'text,pla',
+    adType: subid || 'text,pla',
     'ads-review': '1',
     'ads-sitelink': '1',
     'ads-merchantRating': '1',
@@ -120,7 +120,6 @@ export const searchRequest = async (
     'ads.pla-eliteBadge': '1',
     'ads.pla-priceDrop': '1',
     'ads-page': page.toString(),
-    ...(subid && { subid: '1' }),
   };
 
   Object.entries(searchParams).forEach(([key, value]) => {
