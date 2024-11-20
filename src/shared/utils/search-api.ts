@@ -8,7 +8,7 @@ export const CONFIG = {
   path: '/identity/oauth2/access_token',
   realm: 'sagw',
   searchAppId: 'ad0ff316',
-  serveUrl: 'https://deal-findr.pages.dev/',
+  serveUrl: 'https://deal-findr.com/',
 } as const;
 
 export const getIpAddress = async (): Promise<string> => {
