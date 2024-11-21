@@ -17,6 +17,8 @@ export const getIpAddress = async (): Promise<string> => {
     const headersList = headers();
     const forwardedFor = headersList.get('x-forwarded-for');
 
+    console.log(forwardedFor);
+
     if (forwardedFor && forwardedFor !== '::1') {
       return forwardedFor.split(',')[0].trim();
     }
