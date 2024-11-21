@@ -6,6 +6,7 @@ import {
   getAccessToken,
   searchRequest,
 } from '@/shared/utils/search-api';
+import { headers } from 'next/headers';
 
 export const runtime = 'edge';
 
@@ -46,7 +47,13 @@ async function SearchContent({
     const { query, subid } = searchParams;
     const jwt = await generateJWT();
     const accessToken = await getAccessToken(jwt);
-    const searchResults = await searchRequest(accessToken, query, subid);
+    const userAgent = headers().get('user-agent') || '';
+    const searchResults = await searchRequest(
+      accessToken,
+      query,
+      subid ?? '',
+      userAgent ?? ''
+    );
     return <SearchResults results={searchResults} />;
   } catch (error: any) {
     return <ErrorDisplay error={error} />;

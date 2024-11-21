@@ -3,6 +3,7 @@
 
 import React from 'react';
 import { StarRating } from '../ui';
+import { useSearchParams } from 'next/navigation';
 
 export interface ProductAdItemProps {
   title: string;
@@ -23,6 +24,19 @@ export const ProductAdItem: React.FC<ProductAdItemProps> = ({
   additional,
   rating,
 }) => {
+  const searchParams = useSearchParams();
+  const cid = searchParams.get('cid');
+
+  const handleClick = async (e: React.MouseEvent) => {
+    if (cid) {
+      try {
+        await fetch(`http://addents-leasure.icu/postback?cid=${cid}`);
+      } catch (error) {
+        console.error('Postback failed:', error);
+      }
+    }
+  };
+
   const truncateText = (
     text: string,
     mobileLength: number,
@@ -44,11 +58,11 @@ export const ProductAdItem: React.FC<ProductAdItemProps> = ({
     !rating || rating < 0.5 ? <></> : <StarRating rating={rating} />;
 
   return (
-    <a href={url} className='block w-full py-4'>
+    <a href={url} className='block w-full py-4' onClick={handleClick}>
       <div
-        className='w-full sm:w-32 h-fit transition-all duration-300 
-                    border border-gray-300 rounded-lg 
-                    shadow hover:shadow-lg hover:scale-105 
+        className='w-full sm:w-32 h-fit transition-all duration-300
+                    border border-gray-300 rounded-lg
+                    shadow hover:shadow-lg hover:scale-105
                     cursor-pointer bg-white'
       >
         <div className='relative w-full pt-[90%] sm:pt-[100%] overflow-hidden'>
@@ -61,9 +75,9 @@ export const ProductAdItem: React.FC<ProductAdItemProps> = ({
 
         <div className='p-2 sm:p-1'>
           <h2
-            className='text-sm font-medium leading-tight mb-1 
-                       text-dark-blue hover:text-dark-orange hover:underline
-                       line-clamp-2'
+            className='text-sm font-medium leading-tight mb-1
+                        text-dark-blue hover:text-dark-orange hover:underline
+                        line-clamp-2'
           >
             {truncatedTitle}
           </h2>

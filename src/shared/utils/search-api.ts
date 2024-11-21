@@ -1,5 +1,6 @@
 import { SearchResultsProps } from '@/components/SearchResults';
 import * as jose from 'jose';
+import { headers } from 'next/headers';
 
 export const CONFIG = {
   clientId: '8a5a1638-9231-45a1-89e5-086f41e1f86b',
@@ -13,6 +14,13 @@ export const CONFIG = {
 
 export const getIpAddress = async (): Promise<string> => {
   try {
+    const headersList = headers();
+    const forwardedFor = headersList.get('x-forwarded-for');
+
+    if (forwardedFor && forwardedFor !== '::1') {
+      return forwardedFor;
+    }
+
     const response = await fetch('https://hutils.loxal.net/whois');
     const data = await response.json();
     return data.ip || '0.0.0.0';
@@ -87,13 +95,26 @@ export const getAccessToken = async (jwt: string): Promise<string> => {
   }
 };
 
+let lastRequestTime = 0;
+const minInterval = 500;
+
 export const searchRequest = async (
   accessToken: string,
   query: string,
+  userAgent: string,
   subid?: string,
-  page: number = 1,
-  resultsPerPage: number = 10
+  page: number = 1
 ): Promise<any> => {
+  const currentTime = Date.now();
+  const timeSinceLastRequest = currentTime - lastRequestTime;
+
+  if (timeSinceLastRequest < minInterval) {
+    await new Promise((resolve) =>
+      setTimeout(resolve, minInterval - timeSinceLastRequest)
+    );
+  }
+
+  lastRequestTime = Date.now();
   const ip = await getIpAddress();
   const searchUrl = new URL('https://api.search.yahoo.com/sdata/v3/search');
 
@@ -106,6 +127,7 @@ export const searchRequest = async (
     features: 'ads.pla,ads,ads.north,ads.east',
     adSourceTag: 'brandclick_s2s_sapip_3161_goog_dealfindr2',
     adType: subid || 'text,pla',
+    uag: userAgent,
     'ads-review': '1',
     'ads-sitelink': '1',
     'ads-merchantRating': '1',
