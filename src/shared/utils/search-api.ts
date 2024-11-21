@@ -17,12 +17,11 @@ export const getIpAddress = async (): Promise<string> => {
     const headersList = headers();
     const forwardedFor = headersList.get('x-forwarded-for');
 
-    console.log(forwardedFor);
-
     if (forwardedFor && forwardedFor !== '::1') {
-      return forwardedFor.split(',')[0].trim();
+      return forwardedFor.split(',')[0].trim(); // Use the first IP
     }
 
+    // Fallback to external service
     const response = await fetch('https://api64.ipify.org?format=json');
     const data = await response.json();
     return data.ip || '0.0.0.0';
