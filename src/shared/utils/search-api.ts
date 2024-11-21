@@ -18,10 +18,10 @@ export const getIpAddress = async (): Promise<string> => {
     const forwardedFor = headersList.get('x-forwarded-for');
 
     if (forwardedFor && forwardedFor !== '::1') {
-      return forwardedFor;
+      return forwardedFor.split(',')[0].trim();
     }
 
-    const response = await fetch('https://hutils.loxal.net/whois');
+    const response = await fetch('https://api64.ipify.org?format=json');
     const data = await response.json();
     return data.ip || '0.0.0.0';
   } catch (error) {
