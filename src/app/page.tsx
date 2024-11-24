@@ -51,8 +51,8 @@ async function SearchContent({
     const searchResults = await searchRequest(
       accessToken,
       query,
-      subid ?? '',
-      userAgent ?? ''
+      userAgent,
+      subid
     );
     return <SearchResults results={searchResults} />;
   } catch (error: any) {
