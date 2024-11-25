@@ -6,6 +6,8 @@ import {
   searchRequest,
 } from '@/shared/utils/search-api';
 
+export const runtime = 'edge';
+
 export async function GET(request: NextRequest) {
   try {
     const headersList = headers();
