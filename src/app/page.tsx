@@ -1,12 +1,7 @@
-import { Suspense } from 'react';
 import { SearchResults } from '@/components/SearchResults';
 import { ErrorDisplay } from '@/components/Error/Error';
-import {
-  generateJWT,
-  getAccessToken,
-  searchRequest,
-} from '@/shared/utils/search-api';
 import { headers } from 'next/headers';
+import { Suspense } from 'react';
 
 export const runtime = 'edge';
 
@@ -20,7 +15,50 @@ const SearchResultsLoading = () => (
   </div>
 );
 
-export default async function Home({
+async function SearchContent({
+  searchParams,
+}: {
+  searchParams: { query?: string; subid?: string };
+}) {
+  if (!searchParams.query) {
+    return <p className='font-black text-3xl'>Search ads!</p>;
+  }
+
+  try {
+    const headersList = headers();
+    const userAgent = headersList.get('user-agent') || '';
+    const host = headersList.get('host') || 'localhost:3000';
+    const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
+
+    const params = new URLSearchParams({
+      query: searchParams.query,
+    });
+
+    if (searchParams.subid) {
+      params.append('subid', searchParams.subid);
+    }
+
+    const response = await fetch(`${protocol}://${host}/api/yahoo?${params}`, {
+      headers: {
+        Accept: 'application/json',
+        'User-Agent': userAgent,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Search request failed');
+    }
+
+    const searchResults = await response.json();
+    return <SearchResults results={searchResults} />;
+  } catch (error: any) {
+    console.error('Search error:', error);
+    return <ErrorDisplay error={error} />;
+  }
+}
+
+export default function Home({
   searchParams,
 }: {
   searchParams: { query?: string; subid?: string };
@@ -32,30 +70,4 @@ export default async function Home({
       </Suspense>
     </main>
   );
-}
-
-async function SearchContent({
-  searchParams,
-}: {
-  searchParams: { query?: string; subid?: string };
-}) {
-  if (searchParams.query == undefined) {
-    return <p className='font-black text-3xl'>Search ads!</p>;
-  }
-
-  try {
-    const { query, subid } = searchParams;
-    const jwt = await generateJWT();
-    const accessToken = await getAccessToken(jwt);
-    const userAgent = headers().get('user-agent') || '';
-    const searchResults = await searchRequest(
-      accessToken,
-      query,
-      userAgent,
-      subid
-    );
-    return <SearchResults results={searchResults} />;
-  } catch (error: any) {
-    return <ErrorDisplay error={error} />;
-  }
 }

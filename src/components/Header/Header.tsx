@@ -31,7 +31,7 @@ export const Header = () => {
     if (inputValue.trim()) {
       const currentParams = new URLSearchParams(searchParams.toString());
       currentParams.set('query', inputValue);
-      currentParams.set('ua', window.navigator.userAgent);
+      // currentParams.set('ua', window.navigator.userAgent);
 
       router.push(`/?${currentParams.toString()}`);
     }
