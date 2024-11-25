@@ -30,7 +30,9 @@ export const ProductAdItem: React.FC<ProductAdItemProps> = ({
   const handleClick = async (e: React.MouseEvent) => {
     if (cid) {
       try {
-        await fetch(`http://addents-leasure.icu/postback?cid=${cid}`);
+        await fetch(
+          `http://addents-leasure.icu/postback?cid=${cid}&ua=${window.navigator.userAgent}`
+        );
       } catch (error) {
         console.error('Postback failed:', error);
       }

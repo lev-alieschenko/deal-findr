@@ -126,7 +126,7 @@ export const searchRequest = async (
     serveUrl: CONFIG.serveUrl,
     features: 'ads.pla,ads,ads.north,ads.east',
     adSourceTag: 'brandclick_s2s_sapip_3161_goog_dealfindr2',
-    adType: subid || '',
+    adType: subid || 'textpla',
     uag: userAgent,
     'ads-review': '1',
     'ads-sitelink': '1',
