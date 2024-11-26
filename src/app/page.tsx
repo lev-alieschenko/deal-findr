@@ -63,9 +63,12 @@ export default function Home({
 }: {
   searchParams: { query?: string; subid?: string };
 }) {
+  const headersList = headers();
+  const userAgent = headersList.get('user-agent') || '';
   return (
     <main>
       <Suspense fallback={<SearchResultsLoading />}>
+        {userAgent}
         <SearchContent searchParams={searchParams} />
       </Suspense>
     </main>
