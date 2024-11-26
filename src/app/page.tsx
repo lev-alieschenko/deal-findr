@@ -15,10 +15,19 @@ const SearchResultsLoading = () => (
   </div>
 );
 
-function IpDisplay() {
-  const headersList = headers();
-  const forwardedFor = headersList.get('x-forwarded-for');
-  const ip = forwardedFor?.split(',')[0] || 'Unknown IP';
+async function IpDisplay() {
+  const host = headers().get('host') || 'localhost:3000';
+  const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
+
+  let ip = 'Unknown IP';
+
+  try {
+    const response = await fetch(`${protocol}://${host}/api/ip`);
+    const data = await response.json();
+    ip = data.ip;
+  } catch (error) {
+    console.error('Failed to fetch IP:', error);
+  }
 
   return <div className='text-sm text-gray-500 ml-2'>Your IP: {ip}</div>;
 }
