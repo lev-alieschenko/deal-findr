@@ -20,7 +20,6 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // Для продакшену
   const cfIP = request.headers.get('cf-connecting-ip');
   const forwardedFor = request.headers.get('x-forwarded-for');
   const realIP = request.headers.get('x-real-ip');
