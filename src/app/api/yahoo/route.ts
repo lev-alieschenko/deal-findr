@@ -1,4 +1,3 @@
-import { headers } from 'next/headers';
 import { NextRequest } from 'next/server';
 import {
   generateJWT,
@@ -10,9 +9,9 @@ export const runtime = 'edge';
 
 export async function GET(request: NextRequest) {
   try {
-    const headersList = headers();
-    const realIP = headersList.get('x-real-ip');
-    const realUA = headersList.get('x-real-ua');
+    const userAgent = request.headers.get('user-agent') || '';
+    const forwardedFor = request.headers.get('x-forwarded-for');
+    const clientIP = forwardedFor?.split(',')[0] || request.ip || '';
 
     const searchParams = request.nextUrl.searchParams;
     const query = searchParams.get('query');
@@ -27,15 +26,13 @@ export async function GET(request: NextRequest) {
     const searchResults = await searchRequest(
       accessToken,
       query,
-      realUA || '',
+      userAgent,
       subid || 'textpla'
     );
 
     return new Response(JSON.stringify(searchResults), {
       headers: {
         'Content-Type': 'application/json',
-        'X-User-IP': realIP || '',
-        'X-User-UA': realUA || '',
       },
     });
   } catch (error: any) {
