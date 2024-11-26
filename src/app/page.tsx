@@ -15,13 +15,26 @@ const SearchResultsLoading = () => (
   </div>
 );
 
+function IpDisplay() {
+  const headersList = headers();
+  const forwardedFor = headersList.get('x-forwarded-for');
+  const ip = forwardedFor?.split(',')[0] || 'Unknown IP';
+
+  return <div className='text-sm text-gray-500 ml-2'>Your IP: {ip}</div>;
+}
+
 async function SearchContent({
   searchParams,
 }: {
   searchParams: { query?: string; subid?: string };
 }) {
   if (!searchParams.query) {
-    return <p className='font-black text-3xl'>Search ads!</p>;
+    return (
+      <div>
+        <p className='font-black text-3xl'>Search ads!</p>
+        <IpDisplay />
+      </div>
+    );
   }
 
   try {
@@ -51,7 +64,12 @@ async function SearchContent({
     }
 
     const searchResults = await response.json();
-    return <SearchResults results={searchResults} />;
+    return (
+      <div>
+        <IpDisplay />
+        <SearchResults results={searchResults} />
+      </div>
+    );
   } catch (error: any) {
     console.error('Search error:', error);
     return <ErrorDisplay error={error} />;
@@ -63,12 +81,9 @@ export default function Home({
 }: {
   searchParams: { query?: string; subid?: string };
 }) {
-  const headersList = headers();
-  const userAgent = headersList.get('user-agent') || '';
   return (
     <main>
       <Suspense fallback={<SearchResultsLoading />}>
-        {userAgent}
         <SearchContent searchParams={searchParams} />
       </Suspense>
     </main>
