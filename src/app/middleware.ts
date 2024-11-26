@@ -4,15 +4,21 @@ import type { NextRequest } from 'next/server';
 export function middleware(request: NextRequest) {
   const forwardedFor = request.headers.get('x-forwarded-for');
   const realIP = forwardedFor?.split(',')[0] || request.ip || '';
-
   const userAgent = request.headers.get('user-agent') || '';
 
-  const response = NextResponse.next();
+  const requestHeaders = new Headers(request.headers);
 
-  response.headers.set('x-real-ip', realIP);
-  response.headers.set('x-real-ua', userAgent);
+  requestHeaders.set('x-real-ip', realIP);
+  requestHeaders.set('x-real-ua', userAgent);
+  requestHeaders.set('request-ip', request.ip || '');
+  requestHeaders.set('request-url', request.url);
+  requestHeaders.set('request-geo', JSON.stringify(request.geo));
 
-  return response;
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
 }
 
 export const config = {
