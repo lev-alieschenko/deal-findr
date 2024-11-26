@@ -19,11 +19,18 @@ async function IpDisplay() {
   const host = headers().get('host') || 'localhost:3000';
   const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
 
+  const headersList = headers();
+
+  const ips = headersList.get('x-real-ua');
+  console.log('ips:', ips);
+
   let ip = 'Unknown IP';
 
   try {
     const response = await fetch(`${protocol}://${host}/api/ip`);
+
     const data = await response.json();
+    console.log(data);
     ip = data.ip;
   } catch (error) {
     console.error('Failed to fetch IP:', error);
@@ -51,6 +58,10 @@ async function SearchContent({
     const userAgent = headersList.get('user-agent') || '';
     const host = headersList.get('host') || 'localhost:3000';
     const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
+    headersList.get('request-ip');
+    console.log('request-ip:', headersList.get('request-ip'));
+
+    console.log(userAgent);
 
     const params = new URLSearchParams({
       query: searchParams.query,

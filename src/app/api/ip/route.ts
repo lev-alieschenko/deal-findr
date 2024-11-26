@@ -1,19 +1,32 @@
-import { headers } from 'next/headers';
+import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
-export async function GET() {
-  const headersList = headers();
+export async function GET(request: NextRequest) {
+  const cfIP = request.headers.get('cf-connecting-ip');
+  const forwardedFor = request.headers.get('x-forwarded-for');
+  const realIP = request.headers.get('x-real-ip');
+  const trueClientIP = request.headers.get('true-client-ip');
+
+  let ip =
+    cfIP || forwardedFor?.split(',')[0] || realIP || trueClientIP || '0.0.0.0';
+
+  if (ip === '::1' || ip === '127.0.0.1') {
+    try {
+      const response = await fetch('https://api.ipify.org?format=json');
+      const data = await response.json();
+      ip = data.ip;
+    } catch (error) {
+      console.error('Failed to fetch external IP:', error);
+    }
+  }
 
   const info = {
-    realIp: headersList.get('x-real-ip') || '0.0.0.0',
-    ip: headersList.get('request-ip') || '0.0.0.0',
-    userAgent: headersList.get('x-real-ua') || '',
-    url: headersList.get('request-url') || '',
-    geo: JSON.parse(headersList.get('request-geo') || '{}'),
+    ip,
+    userAgent: request.headers.get('user-agent') || '',
+    url: request.url,
+    geo: request.geo || {},
   };
 
-  return new Response(JSON.stringify(info), {
-    headers: { 'Content-Type': 'application/json' },
-  });
+  return Response.json(info);
 }
