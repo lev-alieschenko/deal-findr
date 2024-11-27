@@ -15,19 +15,20 @@ export const CONFIG = {
 export const getIpAddress = async (): Promise<string> => {
   try {
     const headersList = headers();
-    const forwardedFor = headersList.get('x-forwarded-for');
+    const ip =
+      headersList.get('x-forwarded-for') ||
+      headersList.get('x-real-ip') ||
+      'IP not found';
 
-    if (forwardedFor && forwardedFor !== '::1') {
-      return forwardedFor;
-    }
+    return ip;
 
-    const response = await fetch('https://hutils.loxal.net/whois');
-    const data = await response.json();
-    return data.ip || '0.0.0.0';
+    // const response = await fetch('https://hutils.loxal.net/whois');
+    // const data = await response.json();
+    // return data.ip || '0.0.0.0';
   } catch (error) {
     console.error('Failed to get IP address:', error);
-    return '0.0.0.0';
   }
+  return '0.0.0.0';
 };
 
 export const generateJWT = async (): Promise<string> => {
