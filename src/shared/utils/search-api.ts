@@ -1,4 +1,3 @@
-import { SearchResultsProps } from '@/components/SearchResults';
 import * as jose from 'jose';
 import { headers } from 'next/headers';
 
@@ -11,24 +10,6 @@ export const CONFIG = {
   searchAppId: 'ad0ff316',
   serveUrl: 'https://deal-findr.com',
 } as const;
-
-export const getIpAddress = async (): Promise<string> => {
-  try {
-    const headersList = headers();
-    const forwardedFor = headersList.get('x-forwarded-for');
-
-    if (forwardedFor && forwardedFor !== '::1') {
-      return forwardedFor;
-    }
-
-    const response = await fetch('https://hutils.loxal.net/whois');
-    const data = await response.json();
-    return data.ip || '0.0.0.0';
-  } catch (error) {
-    console.error('Failed to get IP address:', error);
-    return '0.0.0.0';
-  }
-};
 
 export const generateJWT = async (): Promise<string> => {
   try {
@@ -103,7 +84,8 @@ export const searchRequest = async (
   query: string,
   userAgent: string,
   subid?: string,
-  page: number = 1
+  page: number = 1,
+  clientIP: string = '0.0.0.0'
 ): Promise<any> => {
   const currentTime = Date.now();
   const timeSinceLastRequest = currentTime - lastRequestTime;
@@ -115,14 +97,13 @@ export const searchRequest = async (
   }
 
   lastRequestTime = Date.now();
-  const ip = await getIpAddress();
   const searchUrl = new URL('https://api.search.yahoo.com/sdata/v3/search');
 
   const searchParams = {
     appid: CONFIG.searchAppId,
     query: query,
     market: 'en-US',
-    uIP: ip,
+    uIP: clientIP,
     serveUrl: CONFIG.serveUrl,
     features: 'ads.pla,ads,ads.north,ads.east',
     adSourceTag: 'brandclick_s2s_sapip_3161_goog_dealfindr2',

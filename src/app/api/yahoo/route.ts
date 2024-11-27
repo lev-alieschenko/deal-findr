@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import {
   generateJWT,
   getAccessToken,
@@ -10,15 +10,27 @@ export const runtime = 'edge';
 export async function GET(request: NextRequest) {
   try {
     const userAgent = request.headers.get('user-agent') || '';
-    const forwardedFor = request.headers.get('x-forwarded-for');
-    const clientIP = forwardedFor?.split(',')[0] || request.ip || '';
-
     const searchParams = request.nextUrl.searchParams;
+
     const query = searchParams.get('query');
     const subid = searchParams.get('subid');
+    const clientIP = searchParams.get('clientIP');
+
+    if (!clientIP) {
+      return NextResponse.json(
+        { error: 'Client IP is required' },
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
 
     if (!query) {
-      return new Response('Query parameter is required', { status: 400 });
+      return NextResponse.json(
+        { error: 'Query parameter is required' },
+        { status: 400 }
+      );
     }
 
     const jwt = await generateJWT();
@@ -27,18 +39,23 @@ export async function GET(request: NextRequest) {
       accessToken,
       query,
       userAgent,
-      subid || 'textpla'
+      subid || 'textpla',
+      1,
+      clientIP
     );
 
-    return new Response(JSON.stringify(searchResults), {
+    return NextResponse.json(searchResults, {
       headers: {
         'Content-Type': 'application/json',
       },
     });
   } catch (error: any) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return NextResponse.json(
+      { error: error.message },
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   }
 }

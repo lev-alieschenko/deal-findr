@@ -1,9 +1,9 @@
+'use client';
+
 import { SearchResults } from '@/components/SearchResults';
 import { ErrorDisplay } from '@/components/Error/Error';
-import { headers } from 'next/headers';
-import { Suspense } from 'react';
-
-export const runtime = 'edge';
+import { ClientIP } from '@/components/ClienIp/Client';
+import { useEffect, useState } from 'react';
 
 const SearchResultsLoading = () => (
   <div className='p-4'>
@@ -15,97 +15,89 @@ const SearchResultsLoading = () => (
   </div>
 );
 
-async function IpDisplay() {
-  const host = headers().get('host') || 'localhost:3000';
-  const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
-
-  const headersList = headers();
-
-  const ips = headersList.get('x-real-ua');
-  console.log('ips:', ips);
-
-  let ip = 'Unknown IP';
-
-  try {
-    const response = await fetch(`${protocol}://${host}/api/ip`);
-
-    const data = await response.json();
-    console.log(data);
-    ip = data.ip;
-  } catch (error) {
-    console.error('Failed to fetch IP:', error);
-  }
-
-  return <div className='text-sm text-gray-500 ml-2'>Your IP: {ip}</div>;
-}
-
-async function SearchContent({
-  searchParams,
-}: {
-  searchParams: { query?: string; subid?: string };
-}) {
-  if (!searchParams.query) {
-    return (
-      <div>
-        <p className='font-black text-3xl'>Search ads!</p>
-        <IpDisplay />
-      </div>
-    );
-  }
-
-  try {
-    const headersList = headers();
-    const userAgent = headersList.get('user-agent') || '';
-    const host = headersList.get('host') || 'localhost:3000';
-    const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
-    headersList.get('request-ip');
-    console.log('request-ip:', headersList.get('request-ip'));
-
-    console.log(userAgent);
-
-    const params = new URLSearchParams({
-      query: searchParams.query,
-    });
-
-    if (searchParams.subid) {
-      params.append('subid', searchParams.subid);
-    }
-
-    const response = await fetch(`${protocol}://${host}/api/yahoo?${params}`, {
-      headers: {
-        Accept: 'application/json',
-        'User-Agent': userAgent,
-      },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Search request failed');
-    }
-
-    const searchResults = await response.json();
-    return (
-      <div>
-        <IpDisplay />
-        <SearchResults results={searchResults} />
-      </div>
-    );
-  } catch (error: any) {
-    console.error('Search error:', error);
-    return <ErrorDisplay error={error} />;
-  }
-}
-
 export default function Home({
   searchParams,
 }: {
   searchParams: { query?: string; subid?: string };
 }) {
+  const [clientIP, setClientIP] = useState('');
+  const [searchResults, setSearchResults] = useState<any>(null);
+  const [error, setError] = useState<Error | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchResults = async () => {
+      if (!searchParams.query || !clientIP) {
+        console.log('Missing query or IP:', {
+          query: searchParams.query,
+          ip: clientIP,
+        });
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        const host = window.location.host;
+        const protocol = window.location.protocol;
+
+        const params = new URLSearchParams({
+          query: searchParams.query,
+          clientIP: clientIP,
+        });
+
+        if (searchParams.subid) {
+          params.append('subid', searchParams.subid);
+        }
+
+        console.log('Sending request with params:', params.toString());
+        const response = await fetch(
+          `${protocol}//${host}/api/yahoo?${params}`
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Search request failed');
+        }
+
+        const data = await response.json();
+        setSearchResults(data);
+        setError(null);
+      } catch (err: any) {
+        console.error('Search error:', err);
+        setError(err);
+        setSearchResults(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchResults();
+  }, [searchParams.query, searchParams.subid, clientIP]);
+
+  const handleIpReceived = (ip: string) => {
+    console.log('Received IP:', ip);
+    setClientIP(ip);
+  };
+
+  if (!searchParams.query) {
+    return (
+      <div>
+        <p className='font-black text-3xl'>Search ads!</p>
+        <ClientIP onIpReceived={handleIpReceived} />
+      </div>
+    );
+  }
+
   return (
     <main>
-      <Suspense fallback={<SearchResultsLoading />}>
-        <SearchContent searchParams={searchParams} />
-      </Suspense>
+      <ClientIP onIpReceived={handleIpReceived} />
+      {isLoading ? (
+        <SearchResultsLoading />
+      ) : error ? (
+        <ErrorDisplay error={error} />
+      ) : (
+        searchResults && <SearchResults results={searchResults} />
+      )}
     </main>
   );
 }
