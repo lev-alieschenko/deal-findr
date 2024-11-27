@@ -78,6 +78,9 @@ export const Header = () => {
                     />
                   }
                   className='w-full'
+                  crossOrigin={undefined}
+                  onPointerEnterCapture={undefined}
+                  onPointerLeaveCapture={undefined}
                 />
               </div>
             </form>
