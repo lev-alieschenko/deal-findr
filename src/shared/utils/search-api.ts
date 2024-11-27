@@ -1,5 +1,4 @@
 import * as jose from 'jose';
-import { headers } from 'next/headers';
 
 export const CONFIG = {
   clientId: '8a5a1638-9231-45a1-89e5-086f41e1f86b',
