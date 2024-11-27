@@ -5,7 +5,7 @@ import {
   searchRequest,
 } from '@/shared/utils/search-api';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 export async function GET(request: NextRequest) {
   try {
