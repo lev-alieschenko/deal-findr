@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import {
   generateJWT,
   getAccessToken,
   searchRequest,
 } from '@/shared/utils/search-api';
 
-export const runtime = 'nodejs';
+export const runtime = 'edge';
 
 export async function GET(request: NextRequest) {
   try {
@@ -17,19 +17,19 @@ export async function GET(request: NextRequest) {
     const clientIP = searchParams.get('clientIP');
 
     if (!clientIP) {
-      return NextResponse.json(
-        { error: 'Client IP is required' },
+      return new Response(JSON.stringify({ error: 'Client IP is required' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (!query) {
+      return new Response(
+        JSON.stringify({ error: 'Query parameter is required' }),
         {
           status: 400,
           headers: { 'Content-Type': 'application/json' },
         }
-      );
-    }
-
-    if (!query) {
-      return NextResponse.json(
-        { error: 'Query parameter is required' },
-        { status: 400 }
       );
     }
 
@@ -44,18 +44,14 @@ export async function GET(request: NextRequest) {
       clientIP
     );
 
-    return NextResponse.json(searchResults, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    return new Response(JSON.stringify(searchResults), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
     });
   } catch (error: any) {
-    return NextResponse.json(
-      { error: error.message },
-      {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }
