@@ -2,11 +2,13 @@
 const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['async_hooks'],
-    runtime: 'experimental-edge',
   },
-
-  typescript: {
-    ignoreBuildErrors: true,
+  webpack: (config, { isServer }) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      async_hooks: false,
+    };
+    return config;
   },
 };
 
