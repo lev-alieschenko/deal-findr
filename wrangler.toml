@@ -4,12 +4,6 @@ command = "npm run build"
 [build.upload]
 format = "service-worker"
 
-[[build.upload.rules]]
-type = "CommonJS"
-globs = ["**/*.js"]
-[build.upload.rules.options]
-target = "es2020"
-
 [miniflare]
 kv_persist = true
 cache_persist = true
@@ -24,4 +18,4 @@ skip_source_maps = true
 replace_async_hooks = true
 
 
-
+pages_build_output_dir = ".vercel/output/static"
