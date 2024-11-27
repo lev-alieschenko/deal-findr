@@ -5,6 +5,8 @@ import { ErrorDisplay } from '@/components/Error/Error';
 import { ClientIP } from '@/components/ClienIp/Client';
 import { useEffect, useState } from 'react';
 
+export const runtime = 'edge';
+
 const SearchResultsLoading = () => (
   <div className='p-4'>
     <div className='animate-pulse space-y-4'>
