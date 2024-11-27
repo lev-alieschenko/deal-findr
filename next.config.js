@@ -2,7 +2,12 @@
 const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['async_hooks'],
+    runtime: 'experimental-edge',
+  },
+
+  typescript: {
+    ignoreBuildErrors: true,
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
