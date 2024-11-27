@@ -3,22 +3,22 @@ import { NextRequest } from 'next/server';
 export const runtime = 'edge';
 
 export async function GET(request: NextRequest) {
-  // const isDevelopment = process.env.NODE_ENV === 'development';
+  const isDevelopment = process.env.NODE_ENV === 'development';
 
-  // if (isDevelopment) {
-  //   try {
-  //     const response = await fetch('https://api.ipify.org?format=json');
-  //     const data = await response.json();
-  //     return Response.json({
-  //       ip: data.ip,
-  //       userAgent: request.headers.get('user-agent') || '',
-  //       url: request.url,
-  //       geo: request.geo || {},
-  //     });
-  //   } catch (error) {
-  //     console.error('Failed to fetch IP:', error);
-  //   }
-  // }
+  if (isDevelopment) {
+    try {
+      const response = await fetch('https://api.ipify.org?format=json');
+      const data = await response.json();
+      return Response.json({
+        ip: data.ip,
+        userAgent: request.headers.get('user-agent') || '',
+        url: request.url,
+        geo: request.geo || {},
+      });
+    } catch (error) {
+      console.error('Failed to fetch IP:', error);
+    }
+  }
 
   const cfIP = request.headers.get('cf-connecting-ip');
   const forwardedFor = request.headers.get('x-forwarded-for');
@@ -31,7 +31,8 @@ export async function GET(request: NextRequest) {
     forwardedFor?.split(',')[0].match(/(\d+\.){3}\d+/)?.[0] ||
     cfIP ||
     realIP ||
-    trueClientIP;
+    trueClientIP ||
+    '0.0.0.0';
 
   const info = {
     ip,
