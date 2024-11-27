@@ -1,21 +1,14 @@
 [build]
 command = "npm run build"
+pages_build_output_dir = ".vercel/output/static"
 
-[build.upload]
-format = "service-worker"
+[env.production]
+node_compat = true
 
 [miniflare]
 kv_persist = true
 cache_persist = true
 
-[env.production]
-node_compat = true
-
-[build.processing]
-skip_source_maps = true
-
-[build.processing.bundle]
-replace_async_hooks = true
-
-
-pages_build_output_dir = ".vercel/output/static"
+[rules]
+type = "ESModule"
+globs = ["**/node_modules/**"]
