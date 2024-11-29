@@ -4,6 +4,7 @@
 import React from 'react';
 import { StarRating } from '../ui';
 import { useSearchParams } from 'next/navigation';
+import { trackAdClick } from '@/shared/utils/metaPixel';
 
 export interface ProductAdItemProps {
   title: string;
@@ -37,6 +38,11 @@ export const ProductAdItem: React.FC<ProductAdItemProps> = ({
         console.error('Postback failed:', error);
       }
     }
+    trackAdClick({
+      contentType: 'product',
+      contentName: title,
+      value: price,
+    });
   };
 
   const truncateText = (

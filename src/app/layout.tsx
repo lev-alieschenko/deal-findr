@@ -7,6 +7,7 @@ import { AppWrapper } from '@/components/context';
 import { Footer } from '@/components/Footer/Footer';
 
 import './globals.css';
+import MetaPixelProvider from '@/components/MetaProvider/MetaProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -25,6 +26,7 @@ export default function RootLayout({
       <body
         className={`${inter.className} min-h-screen relative flex flex-col`}
       >
+        <MetaPixelProvider />
         <AppWrapper>
           <React.Suspense>
             <Header />

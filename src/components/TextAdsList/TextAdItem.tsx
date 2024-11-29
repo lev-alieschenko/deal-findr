@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { trackAdClick } from '@/shared/utils/metaPixel';
 
 export interface TextAdItemProps {
   title: string;
@@ -20,6 +21,13 @@ export const TextAdItem: React.FC<TextAdItemProps> = ({
   displayDomain,
   displayUrl,
 }) => {
+  const handleClick = () => {
+    trackAdClick({
+      contentType: 'text',
+      contentName: title,
+    });
+  };
+
   const stripHtml = (html: string) => {
     const tmp = document.createElement('DIV');
     tmp.innerHTML = html;
@@ -137,6 +145,7 @@ export const TextAdItem: React.FC<TextAdItemProps> = ({
           className='text-xl text-dark-blue hover:text-dark-orange hover:underline'
           href={url}
           target='_blank'
+          onClick={handleClick}
           dangerouslySetInnerHTML={{ __html: truncatedTitle }}
         />
       </h2>
