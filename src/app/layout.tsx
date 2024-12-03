@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
@@ -26,7 +26,9 @@ export default function RootLayout({
       <body
         className={`${inter.className} min-h-screen relative flex flex-col`}
       >
-        <MetaPixelProvider />
+        <Suspense>
+          <MetaPixelProvider />
+        </Suspense>
         <AppWrapper>
           <React.Suspense>
             <Header />

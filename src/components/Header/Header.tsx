@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { setUrlParameter } from '../common';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAppContext } from '../context';
 
