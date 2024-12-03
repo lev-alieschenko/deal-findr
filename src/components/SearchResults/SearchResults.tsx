@@ -88,7 +88,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ results }) => {
     setTotalResults(allAds.length);
   }, [query, allAds.length]);
 
-  if (!query) {
+  if (!allAds.length) {
     return <p>No content</p>;
   }
 
