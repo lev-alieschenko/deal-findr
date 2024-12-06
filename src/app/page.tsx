@@ -20,7 +20,7 @@ const SearchResultsLoading = () => (
 export default function Home({
   searchParams,
 }: {
-  searchParams: { query?: string; subid?: string };
+  searchParams: { query?: string; subid?: string, t?: string };
 }) {
   const [clientIP, setClientIP] = useState('');
   const [searchResults, setSearchResults] = useState<any>(null);
@@ -51,6 +51,10 @@ export default function Home({
           params.append('subid', searchParams.subid);
         }
 
+        if(searchParams.t) {
+          params.append('t', searchParams.t);
+        }
+
         console.log('Sending request with params:', params.toString());
         const response = await fetch(
           `${protocol}//${host}/api/yahoo?${params}`
@@ -74,7 +78,7 @@ export default function Home({
     };
 
     fetchResults();
-  }, [searchParams.query, searchParams.subid, clientIP]);
+  }, [searchParams.query, searchParams.subid, searchParams.t, clientIP]);
 
   const handleIpReceived = (ip: string) => {
     console.log('Received IP:', ip);

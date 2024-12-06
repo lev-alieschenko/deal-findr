@@ -84,7 +84,8 @@ export const searchRequest = async (
   userAgent: string,
   subid?: string,
   page: number = 1,
-  clientIP: string = '0.0.0.0'
+  clientIP: string = '0.0.0.0',
+  adSourceTag: string = 'brandclick_s2s_sapip_3161_goog_dealfindr2'
 ): Promise<any> => {
   const currentTime = Date.now();
   const timeSinceLastRequest = currentTime - lastRequestTime;
@@ -105,7 +106,7 @@ export const searchRequest = async (
     uIP: clientIP,
     serveUrl: CONFIG.serveUrl,
     features: 'ads.pla,ads,ads.north,ads.east',
-    adSourceTag: 'brandclick_s2s_sapip_3161_goog_dealfindr2',
+    adSourceTag,
     adType: subid || 'textpla',
     'ads-review': '1',
     'ads-sitelink': '1',

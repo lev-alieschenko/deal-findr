@@ -1,9 +1,10 @@
-import { NextRequest } from 'next/server';
+import { getAdSourceTag } from "@/components/common/getAdSourceTag";
 import {
   generateJWT,
   getAccessToken,
   searchRequest,
 } from '@/shared/utils/search-api';
+import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
@@ -13,6 +14,7 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
 
     const query = searchParams.get('query');
+    const t = searchParams.get('t');
     const subid = searchParams.get('subid');
     const clientIP = searchParams.get('clientIP');
 
@@ -35,13 +37,15 @@ export async function GET(request: NextRequest) {
 
     const jwt = await generateJWT();
     const accessToken = await getAccessToken(jwt);
+    const adSourceTag = getAdSourceTag(t);
     const searchResults = await searchRequest(
       accessToken,
       query,
       userAgent,
       subid || 'textpla',
       1,
-      clientIP
+      clientIP,
+      adSourceTag
     );
 
     return new Response(JSON.stringify(searchResults), {
