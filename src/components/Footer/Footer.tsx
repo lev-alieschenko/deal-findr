@@ -8,11 +8,11 @@ export const Footer = () => {
         <a className="hover:underline ml-4 mr-4" href="https://brandclick.com/terms-of-service">
           Terms of Service
         </a>
-        <a className="hover:underline" href="https://brandclick.com/contact">
-          Contact Us
+        <a className="hover:underline ml-4 mr-4" href="https://brandclick.com/terms-of-service">
+          For Advertisers
         </a>
         <a className="hover:underline" href="https://brandclick.com/contact">
-          For Advertisers
+          Contact Us
         </a>
       </div>
     </footer>
