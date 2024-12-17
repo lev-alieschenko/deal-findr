@@ -11,6 +11,9 @@ export const Footer = () => {
         <a className="hover:underline" href="https://brandclick.com/contact">
           Contact Us
         </a>
+        <a className="hover:underline" href="https://brandclick.com/contact">
+          For Advertisers
+        </a>
       </div>
     </footer>
   );
