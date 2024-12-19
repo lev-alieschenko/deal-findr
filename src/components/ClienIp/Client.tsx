@@ -25,5 +25,5 @@ export const ClientIP = ({
     getIP();
   }, [onIpReceived]);
 
-  return <div className='text-sm text-gray-500 ml-2'>Your IP: {ip}</div>;
+  return <div className='text-sm text-gray-500 ml-2'></div>;
 };
