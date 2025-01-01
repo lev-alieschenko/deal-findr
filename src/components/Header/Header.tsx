@@ -50,6 +50,7 @@ export const Header = () => {
       <div className='container mx-auto px-4'>
         <div className='flex flex-col md:flex-row md:items-center'>
           <div className='flex justify-center md:justify-start py-4 md:py-0'>
+            
             <a href='/' className='block'>
               <Image
                 src='/deal-findr.png'
