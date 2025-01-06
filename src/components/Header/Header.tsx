@@ -1,26 +1,26 @@
-'use client';
+"use client";
 
-import { Input } from '@material-tailwind/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { useAppContext } from '../context';
+import { Input } from "@material-tailwind/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import Image from "next/image";
+import { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useAppContext } from "../context";
 
 export const Header = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const { query, setQuery } = useAppContext();
 
   useEffect(() => {
-    const searchQuery = searchParams.get('query');
+    const searchQuery = searchParams.get("query");
     if (searchQuery) {
       setInputValue(searchQuery);
       setQuery(searchQuery);
     }
-  }, []);
+  }, [searchParams, setQuery]);
 
   useEffect(() => {
     setInputValue(query);
@@ -29,7 +29,7 @@ export const Header = () => {
   const handleSearch = () => {
     if (inputValue.trim()) {
       const currentParams = new URLSearchParams(searchParams.toString());
-      currentParams.set('query', inputValue);
+      currentParams.set("query", inputValue);
       // currentParams.set('ua', window.navigator.userAgent);
 
       router.push(`/?${currentParams.toString()}`);
@@ -46,38 +46,37 @@ export const Header = () => {
   };
 
   return (
-    <header className='w-full pt-4'>
-      <div className='container mx-auto px-4'>
-        <div className='flex flex-col md:flex-row md:items-center'>
-          <div className='flex justify-center md:justify-start py-4 md:py-0'>
-            
-            <a href='/' className='block'>
+    <header className="w-full pt-4">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col md:flex-row md:items-center">
+          <div className="flex justify-center md:justify-start py-4 md:py-0">
+            <a href="/" className="block">
               <Image
-                src='/deal-findr.png'
-                alt='DealFinder logo'
+                src="/deal-findr.png"
+                alt="DealFinder logo"
                 width={96}
                 height={40}
                 priority
-                className='w-auto h-auto'
+                className="w-auto h-auto"
               />
             </a>
           </div>
-          <div className='w-full md:ml-8 pb-4 md:pb-0'>
-            <form onSubmit={submitHandler} className='w-full'>
-              <div className='w-full md:max-w-[650px] shadow-md'>
+          <div className="w-full md:ml-8 pb-4 md:pb-0">
+            <form onSubmit={submitHandler} className="w-full">
+              <div className="w-full md:max-w-[650px] shadow-md">
                 <Input
-                  size='lg'
+                  size="lg"
                   onChange={handleInputChange}
                   value={inputValue}
-                  label='Search'
+                  label="Search"
                   icon={
                     <FontAwesomeIcon
-                      className='cursor-pointer hover:text-blue-500 transition-colors'
+                      className="cursor-pointer hover:text-blue-500 transition-colors"
                       icon={faSearch}
                       onClick={handleSearch}
                     />
                   }
-                  className='w-full'
+                  className="w-full"
                   crossOrigin={undefined}
                   onPointerEnterCapture={undefined}
                   onPointerLeaveCapture={undefined}
