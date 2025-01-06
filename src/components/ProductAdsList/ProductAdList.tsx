@@ -58,7 +58,7 @@ const ProductAdList: React.FC<{ plaData: PLAData }> = ({ plaData }) => {
       checkScrollButtons();
       return () => container.removeEventListener('scroll', checkScrollButtons);
     }
-  }, []);
+  }, [transformedAds.length]);
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current && !isScrolling) {
