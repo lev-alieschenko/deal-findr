@@ -5,12 +5,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useAppContext } from "../context";
 
 export const Header = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const pathname = usePathname();
   const [inputValue, setInputValue] = useState("");
   const { query, setQuery } = useAppContext();
 
@@ -45,9 +46,9 @@ export const Header = () => {
     setInputValue(e.target.value);
   };
 
-  return (
+  return pathname !== "/land" ? (
     <header className="w-full pt-4">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto">
         <div className="flex flex-col md:flex-row md:items-center">
           <div className="flex justify-center md:justify-start py-4 md:py-0">
             <a href="/" className="block">
@@ -88,5 +89,5 @@ export const Header = () => {
         </div>
       </div>
     </header>
-  );
+  ) : null;
 };

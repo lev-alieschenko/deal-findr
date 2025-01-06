@@ -33,7 +33,7 @@ export default function RootLayout({
           <React.Suspense>
             <Header />
           </React.Suspense>
-          <main className='flex-1 px-4 md:px-6 lg:px-40 pt-4 pb-12 w-full'>
+          <main className='flex-1 w-full'>
             {children}
           </main>
           <Footer />
