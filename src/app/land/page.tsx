@@ -18,8 +18,12 @@ export default function Landing({ searchParams }: any) {
         priority
       />
       <div className="min-h-screen w-4/5 lg:w-2/5 mx-auto pt-[30vh]">
-        <p className="text-gray-500">Searches</p>
-        <RedirectButtonList searchParams={params} />
+        {params.length > 0 && <p className="text-gray-500">Searches</p>}
+        {params.length > 0 ? (
+          <RedirectButtonList searchParams={params} />
+        ) : (
+          <p className="text-gray-500 text-center">No searches</p>
+        )}
       </div>
       <Image
         src="/curved-wings.png"
