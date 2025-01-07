@@ -24,8 +24,8 @@ export default function Home({
 }) {
   const [clientIP, setClientIP] = useState('');
   const [searchResults, setSearchResults] = useState<any>(null);
-  const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     const fetchResults = async () => {
