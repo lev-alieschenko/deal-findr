@@ -87,7 +87,7 @@ export default function Home({
 
   if (!searchParams.query) {
     return (
-      <div>
+      <div className='px-4 md:px-6 lg:px-40 pt-4 pb-12'>
         <p className='font-black text-3xl'>Search ads!</p>
         <ClientIP onIpReceived={handleIpReceived} />
       </div>
@@ -95,7 +95,7 @@ export default function Home({
   }
 
   return (
-    <main>
+    <main className='px-4 md:px-6 lg:px-40 pt-4 pb-12'>
       <ClientIP onIpReceived={handleIpReceived} />
       {isLoading ? (
         <SearchResultsLoading />
