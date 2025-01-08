@@ -4,6 +4,7 @@ import { getPParams } from "@/components/common/getPParams";
 import RedirectButtonList from "@/components/RedirectButtons/RedirectButtonList";
 import Image from "next/image";
 
+export const runtime = 'edge';
 
 export default function Landing({ searchParams }: any) {
   const params = getPParams(searchParams);
