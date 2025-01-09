@@ -19,7 +19,7 @@ export default function Landing({ searchParams }: any) {
         height={320}
         priority
       />
-      <div className="min-h-screen w-4/5 lg:w-2/5 mx-auto pt-[30vh]">
+      <div className="min-h-screen w-4/5 lg:w-2/5 mx-auto pt-4 sm:pt-[30vh]">
         {params.length > 0 && <p className="text-gray-500">Searches</p>}
         {params.length > 0 ? (
           <RedirectButtonList searchParams={params} />
