@@ -8,7 +8,7 @@ export default function RedirectButtonList({
   return (
     <div className="w-full">
       {searchParams.map((searchParam, index) => (
-        <RedirectButton text={searchParam} key={index} isFirst={index === 0} />
+        <RedirectButton text={searchParam} key={index} />
       ))}
     </div>
   );
