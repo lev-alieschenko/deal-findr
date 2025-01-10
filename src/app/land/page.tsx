@@ -10,7 +10,7 @@ export default function Landing({ searchParams }: any) {
   const params = getPParams(searchParams);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-[#020024] via-[#0d0d3d] to-[#00d4ff] relative">
+    <div className="min-h-screen flex items-center justify-center relative">
       <Image
         src="/curved-wings.png"
         alt="Left Wing"
@@ -20,7 +20,7 @@ export default function Landing({ searchParams }: any) {
         priority
       />
       <div className="min-h-screen w-4/5 lg:w-2/5 mx-auto pt-4 sm:pt-[30vh]">
-        {params.length > 0 && <p className="text-gray-500">Searches</p>}
+        {params.length > 0 && <p>Searches</p>}
         {params.length > 0 ? (
           <RedirectButtonList searchParams={params} />
         ) : (
