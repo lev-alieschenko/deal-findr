@@ -14,13 +14,24 @@ export default function Landing({ searchParams }: any) {
       <Image
         src="/curved-wings.png"
         alt="Left Wing"
-        className="w-1/4 fixed bottom-0 left-0 hidden lg:block"
+        className="w-1/4 fixed bottom-16 left-0 hidden lg:block"
         width={320}
         height={320}
         priority
       />
-      <div className="min-h-screen w-4/5 lg:w-2/5 mx-auto pt-4 sm:pt-[30vh]">
-        {params.length > 0 && <p className="text-gray-500">Searches</p>}
+      <div className="min-h-screen w-4/5 lg:w-2/5 pt-2 pb-20 sm:pb-12 mx-auto flex flex-col items-end">
+        <a href="/" className="block">
+          <Image
+            src="/deal-findr.png"
+            alt="DealFinder logo"
+            width={96}
+            height={40}
+            priority
+          />
+        </a>
+        {params.length > 0 && (
+          <p className="text-gray-200 mt-4 sm:mt-[30vh]">Searches</p>
+        )}
         {params.length > 0 ? (
           <RedirectButtonList searchParams={params} />
         ) : (
@@ -30,7 +41,7 @@ export default function Landing({ searchParams }: any) {
       <Image
         src="/curved-wings.png"
         alt="Right Wing"
-        className="w-1/4 fixed bottom-0 right-0 transform scale-x-[-1] hidden lg:block"
+        className="w-1/4 fixed bottom-16 right-0 transform scale-x-[-1] hidden lg:block"
         width={320}
         height={320}
         priority

@@ -1,11 +1,5 @@
-'use client'
-
-import { usePathname } from "next/navigation";
-
 export const Footer = () => {
-  const pathname = usePathname();
-
-  return pathname !== "/land" ? (
+  return (
     <footer className="absolute bottom-0 w-full flex flex-row justify-center py-3 bg-gray-100">
       <div className="min-w-[300px] flex flex-row text-gray-700">
         <a className="hover:underline" href="https://brandclick.com/privacy">
@@ -28,5 +22,5 @@ export const Footer = () => {
         </a>
       </div>
     </footer>
-  ) : null;
+  );
 };
