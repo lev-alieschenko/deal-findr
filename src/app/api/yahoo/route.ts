@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
 
     const jwt = await generateJWT();
     const accessToken = await getAccessToken(jwt);
-    const adSourceTag = getAdSourceTag(t);
+    const adSourceTag = await getAdSourceTag(t);
     const searchResults = await searchRequest(
       accessToken,
       query,
