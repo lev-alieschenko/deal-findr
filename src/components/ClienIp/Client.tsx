@@ -11,7 +11,7 @@ export const ClientIP = ({
   useEffect(() => {
     const getIP = async () => {
       try {
-        const response = await fetch('https://api.ipify.org?format=json');
+        const response = await fetch('https://ipinfo.io/json');
         const data = await response.json();
         setIp(data.ip);
         onIpReceived(data.ip);
