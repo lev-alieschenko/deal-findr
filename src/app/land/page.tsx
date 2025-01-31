@@ -8,6 +8,8 @@ export const runtime = 'edge';
 
 export default function Landing({ searchParams }: any) {
   const params = getPParams(searchParams);
+  
+  const cid = searchParams.cid;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-[#020024] via-[#0d0d3d] to-[#00d4ff] relative">
@@ -33,7 +35,7 @@ export default function Landing({ searchParams }: any) {
           <p className="text-gray-200 mt-4 sm:mt-[30vh]">Searches</p>
         )}
         {params.length > 0 ? (
-          <RedirectButtonList searchParams={params} />
+          <RedirectButtonList searchParams={params} cid={cid} />
         ) : (
           <p className="text-gray-500 text-center">No searches</p>
         )}
