@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Image from 'next/image';
-import { trackAdClick } from '@/shared/utils/metaPixel';
+import React from "react";
+import { trackAdClick } from "@/shared/utils/metaPixel";
+import { sendPostback } from "@/shared/utils/postback";
+import { useSearchParams } from "next/navigation";
 
 export interface TextAdItemProps {
   title: string;
@@ -21,34 +22,41 @@ export const TextAdItem: React.FC<TextAdItemProps> = ({
   displayDomain,
   displayUrl,
 }) => {
+  const searchParams = useSearchParams();
+  const cid = searchParams.get("cid");
+
   const handleClick = () => {
+    if (cid) {
+      sendPostback(cid);
+    }
+
     trackAdClick({
-      contentType: 'text',
+      contentType: "text",
       contentName: title,
     });
   };
 
   const stripHtml = (html: string) => {
-    const tmp = document.createElement('DIV');
+    const tmp = document.createElement("DIV");
     tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || '';
+    return tmp.textContent || tmp.innerText || "";
   };
 
   const truncateHtml = (html: string, maxLength: number) => {
     const strippedText = stripHtml(html);
     if (strippedText.length <= maxLength) return html;
 
-    let truncated = '';
+    let truncated = "";
     let currentLength = 0;
     let inTag = false;
-    let currentTag = '';
+    let currentTag = "";
 
     for (let i = 0; i < html.length; i++) {
       const char = html[i];
 
-      if (char === '<') {
+      if (char === "<") {
         inTag = true;
-        currentTag = '';
+        currentTag = "";
       }
 
       if (inTag) {
@@ -59,7 +67,7 @@ export const TextAdItem: React.FC<TextAdItemProps> = ({
         currentLength++;
       }
 
-      if (char === '>') {
+      if (char === ">") {
         inTag = false;
         truncated += currentTag;
         continue;
@@ -70,14 +78,14 @@ export const TextAdItem: React.FC<TextAdItemProps> = ({
       }
 
       if (currentLength >= maxLength && !inTag) {
-        truncated += ' ...';
+        truncated += " ...";
         break;
       }
     }
 
     const matches = truncated.match(/<([^/][^>]*?)>/g) || [];
     const openTags = matches
-      .map((tag) => tag.match(/<([^ >]*)/)?.[1] || '')
+      .map((tag) => tag.match(/<([^ >]*)/)?.[1] || "")
       .filter(Boolean);
 
     for (let i = openTags.length - 1; i >= 0; i--) {
@@ -88,37 +96,37 @@ export const TextAdItem: React.FC<TextAdItemProps> = ({
   };
 
   const processDescription = (desc: string, maxLength: number) => {
-    const allowedTags = ['strong', 'em', 'b', 'i', 'span'];
+    const allowedTags = ["strong", "em", "b", "i", "span"];
 
     allowedTags.forEach((tag) => {
-      desc = desc.replace(new RegExp(`</${tag}>`, 'gi'), `||/${tag}||`);
+      desc = desc.replace(new RegExp(`</${tag}>`, "gi"), `||/${tag}||`);
     });
 
     allowedTags.forEach((tag) => {
-      desc = desc.replace(new RegExp(`<${tag}>`, 'gi'), `||${tag}||`);
+      desc = desc.replace(new RegExp(`<${tag}>`, "gi"), `||${tag}||`);
     });
 
-    desc = desc.replace(/<[^>]+>/g, '');
+    desc = desc.replace(/<[^>]+>/g, "");
 
     if (stripHtml(desc).length > maxLength) {
-      let stripped = '';
+      let stripped = "";
       let length = 0;
-      let parts = desc.split(' ');
+      let parts = desc.split(" ");
 
       for (let part of parts) {
         if (length + stripHtml(part).length > maxLength) {
           break;
         }
-        stripped += (stripped ? ' ' : '') + part;
+        stripped += (stripped ? " " : "") + part;
         length += stripHtml(part).length;
       }
 
-      desc = stripped + ' ...';
+      desc = stripped + " ...";
     }
 
     allowedTags.forEach((tag) => {
-      desc = desc.replace(new RegExp(`\\|\\|${tag}\\|\\|`, 'g'), `<${tag}>`);
-      desc = desc.replace(new RegExp(`\\|\\|/${tag}\\|\\|`, 'g'), `</${tag}>`);
+      desc = desc.replace(new RegExp(`\\|\\|${tag}\\|\\|`, "g"), `<${tag}>`);
+      desc = desc.replace(new RegExp(`\\|\\|/${tag}\\|\\|`, "g"), `</${tag}>`);
     });
 
     return desc;
@@ -128,29 +136,29 @@ export const TextAdItem: React.FC<TextAdItemProps> = ({
   const processedDescription = processDescription(description, 175);
 
   return (
-    <div className='w-full mb-4'>
-      <div className='flex items-center mb-1'>
+    <div className="w-full mb-4">
+      <div className="flex items-center mb-1">
         {iconUrl && (
-          <div className='mr-2'>
-            <img src={iconUrl} alt='Icon' width={16} height={16} />
+          <div className="mr-2">
+            <img src={iconUrl} alt="Icon" width={16} height={16} />
           </div>
         )}
-        <div className='text-sm text-gray-800'>
-          {displayDomain && <span className='mr-1'>{displayDomain}</span>}
+        <div className="text-sm text-gray-800">
+          {displayDomain && <span className="mr-1">{displayDomain}</span>}
           {displayUrl && <span>{displayUrl}</span>}
         </div>
       </div>
       <h2>
         <a
-          className='text-xl text-dark-blue hover:text-dark-orange hover:underline'
+          className="text-xl text-dark-blue hover:text-dark-orange hover:underline"
           href={url}
-          target='_blank'
+          target="_blank"
           onClick={handleClick}
           dangerouslySetInnerHTML={{ __html: truncatedTitle }}
         />
       </h2>
       <p
-        className='text-sm text-gray-800'
+        className="text-sm text-gray-800"
         dangerouslySetInnerHTML={{ __html: processedDescription }}
       />
     </div>
