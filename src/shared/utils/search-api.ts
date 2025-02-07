@@ -85,6 +85,7 @@ export const searchRequest = async (
   subid?: string,
   page: number = 1,
   clientIP: string = '0.0.0.0',
+  marketCode: string = "en-US",
   adSourceTag: string = 'brandclick_s2s_sapip_3161_goog_dealfindr2'
 ): Promise<any> => {
   const currentTime = Date.now();
@@ -102,7 +103,7 @@ export const searchRequest = async (
   const searchParams = {
     appid: CONFIG.searchAppId,
     query: query,
-    market: 'en-US',
+    market: marketCode,
     uIP: clientIP,
     serveUrl: CONFIG.serveUrl,
     features: 'ads.pla,ads,ads.north,ads.east',

@@ -17,9 +17,17 @@ export async function GET(request: NextRequest) {
     const t = searchParams.get('t');
     const subid = searchParams.get('subid');
     const clientIP = searchParams.get('clientIP');
+    const marketCode = searchParams.get('marketCode');
 
     if (!clientIP) {
       return new Response(JSON.stringify({ error: 'Client IP is required' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (!marketCode) {
+      return new Response(JSON.stringify({ error: 'MarketCode is required' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
       });
@@ -45,6 +53,7 @@ export async function GET(request: NextRequest) {
       subid || 'textpla',
       1,
       clientIP,
+      marketCode,
       adSourceTag
     );
 

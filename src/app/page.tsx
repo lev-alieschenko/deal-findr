@@ -17,21 +17,29 @@ const SearchResultsLoading = () => (
   </div>
 );
 
+interface SearchParams {
+  query?: string;
+  subid?: string;
+  t?: string;
+}
+
 export default function Home({
   searchParams,
 }: {
-  searchParams: { query?: string; subid?: string, t?: string };
+  searchParams: SearchParams;
 }) {
   const [clientIP, setClientIP] = useState('');
+  const [marketCode, setMarketCode] = useState<string>('');
   const [searchResults, setSearchResults] = useState<any>(null);
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchResults = async () => {
-      if (!searchParams.query || !clientIP) {
-        console.log('Missing query or IP:', {
+      if (!searchParams.query || !marketCode || !clientIP) {
+        console.log('Missing query, market code, or IP:', {
           query: searchParams.query,
+          marketCode,
           ip: clientIP,
         });
         return;
@@ -44,6 +52,7 @@ export default function Home({
 
         const params = new URLSearchParams({
           query: searchParams.query,
+          marketCode,
           clientIP: clientIP,
         });
 
@@ -78,25 +87,26 @@ export default function Home({
     };
 
     fetchResults();
-  }, [searchParams.query, searchParams.subid, searchParams.t, clientIP]);
+  }, [searchParams.query, searchParams.subid, searchParams.t, marketCode, clientIP]);
 
-  const handleIpReceived = (ip: string) => {
-    console.log('Received IP:', ip);
+  const handleIpAndMarketCodeReceived = (ip: string, code: string) => {
+    console.log('Received IP:', ip, 'Market Code:', code);
     setClientIP(ip);
+    setMarketCode(code);
   };
 
   if (!searchParams.query) {
     return (
       <div className='px-4 md:px-6 lg:px-40 pt-4 pb-12'>
         <p className='font-black text-3xl'>Search ads!</p>
-        <ClientIP onIpReceived={handleIpReceived} />
+        <ClientIP onIpAndMarketCodeReceived={handleIpAndMarketCodeReceived} />
       </div>
     );
   }
 
   return (
     <main className='px-4 md:px-6 lg:px-40 pt-4 pb-12'>
-      <ClientIP onIpReceived={handleIpReceived} />
+      <ClientIP onIpAndMarketCodeReceived={handleIpAndMarketCodeReceived} />
       {isLoading ? (
         <SearchResultsLoading />
       ) : error ? (
