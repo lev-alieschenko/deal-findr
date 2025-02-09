@@ -106,7 +106,7 @@ export const searchRequest = async (
     market: marketCode,
     uIP: clientIP,
     serveUrl: CONFIG.serveUrl,
-    features: 'ads.pla,ads,ads.north,ads.east,video.algo, news.algo,image.algo,web.algo',
+    features: 'ads.pla,ads,ads.north,ads.east',
     adSourceTag,
     adType: subid || 'textpla',
     'ads-review': '1',
