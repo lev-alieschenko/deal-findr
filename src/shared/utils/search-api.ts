@@ -122,6 +122,8 @@ export const searchRequest = async (
     'ads-favicon': '1',
     'ads.pla-eliteBadge': '1',
     'ads.pla-priceDrop': '1',
+    'ads.pla-merchantPromotion': '1',
+    'ads.pla-productRatings': '1',
     'ads-page': page.toString(),
   };
 

@@ -54,7 +54,7 @@ export const Header = () => {
             <a href="/" className="block">
               <Image
                 src="/deal-findr.png"
-                alt="DealFinder logo"
+                alt="Deal Findr logo"
                 width={96}
                 height={40}
                 priority

@@ -136,21 +136,21 @@ export const TextAdItem: React.FC<TextAdItemProps> = ({
   const processedDescription = processDescription(description, 175);
 
   return (
-    <div className="w-full mb-4">
-      <div className="flex items-center mb-1">
+    <div className="w-full p-4 bg-white shadow-md rounded-2xl border border-gray-200 hover:shadow-lg transition duration-300">
+      <div className="flex items-center space-x-3 mb-2">
         {iconUrl && (
           <div className="mr-2">
             <img src={iconUrl} alt="Icon" width={16} height={16} />
           </div>
         )}
-        <div className="text-sm text-gray-800">
-          {displayDomain && <span className="mr-1">{displayDomain}</span>}
-          {displayUrl && <span>{displayUrl}</span>}
+        <div className="text-sm text-gray-600 truncate">
+          {displayDomain && <span className="font-medium">{displayDomain}</span>}
+          {displayUrl && <span className="ml-1 text-gray-500">{displayUrl}</span>}
         </div>
       </div>
-      <h2>
+      <h2 className="text-lg font-semibold text-dark-blue hover:text-orange-600 transition duration-200">
         <a
-          className="text-xl text-dark-blue hover:text-dark-orange hover:underline"
+          rel="noopener noreferrer"
           href={url}
           target="_blank"
           onClick={handleClick}
@@ -158,7 +158,7 @@ export const TextAdItem: React.FC<TextAdItemProps> = ({
         />
       </h2>
       <p
-        className="text-sm text-gray-800"
+        className="mt-2 text-sm text-gray-700 line-clamp-3"
         dangerouslySetInnerHTML={{ __html: processedDescription }}
       />
     </div>

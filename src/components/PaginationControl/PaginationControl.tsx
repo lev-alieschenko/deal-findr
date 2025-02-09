@@ -19,23 +19,14 @@ export const PaginationControl: React.FC<PaginationControlProps> = ({
 
     for (let i = lowestPage; i <= highestPage; i++) {
       const isActive = currentPage === i;
-      const liClassName = isActive
-        ? "mx-2 py-2 border-b-[3px] border-blue-800 text-gray-800 hover:text-gray-500 cursor-default"
-        : "mx-2 py-2 hover:bg-gray-100";
-      const aClassName = isActive
-        ? "px-4 py-2 text-sm font-semibold cursor-default"
-        : "px-4 py-2 text-sm text-gray-600";
       tabs.push(
-        <li key={i} className={liClassName}>
-          <a
-            href="#"
-            className={aClassName}
-            onClick={() => {
-              setCurrentPage(i);
-            }}
+        <li key={i} className={`mx-1 rounded-lg ${isActive ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-800 hover:bg-gray-200"} transition duration-300`}>
+          <button
+            className="px-4 py-2 text-sm font-medium w-full"
+            onClick={() => setCurrentPage(i)}
           >
             {i}
-          </a>
+          </button>
         </li>
       );
     }
@@ -48,78 +39,56 @@ export const PaginationControl: React.FC<PaginationControlProps> = ({
       <ul className="flex flex-row">
         {currentPage > 1 && (
           <li className="mx-2 flex flex-column items-center hover:bg-gray-100">
-            <a
-              className="py-2 px-2"
-              href="#"
-              onClick={() => {
-                setCurrentPage((prev) => prev - 1);
-              }}
+            <button
+              className="p-2"
+              onClick={() => setCurrentPage((prev) => prev - 1)}
             >
-              <Image
-                className="object-cover"
-                src="/previous-page.png"
-                alt="Previous page"
-                width={18}
-                height={18}
-              />
-            </a>
+              <Image src="/previous-page.png" alt="Previous" width={18} height={18} />
+            </button>
           </li>
         )}
         {currentPage === 4 && (
           <li className="mx-2 flex flex-column items-center hover:bg-gray-100">
-            <a
-              className="mx-2 px-2 py-2 text-sm text-gray-600"
-              href="#"
-              onClick={() => {
-                setCurrentPage(1);
-              }}
+            <button
+              className="p-2"
+              onClick={() => setCurrentPage(1)}
             >
               1
-            </a>
+            </button>
           </li>
         )}
         {currentPage >= 5 && (
           <>
             <li className="mx-2 flex flex-column items-center hover:bg-gray-100">
-              <a
-                className="mx-2 px-2 py-2 text-sm text-gray-600"
-                href="#"
+              <button
+                className="p-2"
                 onClick={() => setCurrentPage(1)}
               >
                 1
-              </a>
+              </button>
             </li>
             <li className="mx-2 flex flex-column items-center hover:bg-gray-100">
-              <a
-                className="py-2 px-2"
-                href="#"
+              <button
+                className="p-2"
                 onClick={() => {
                   setCurrentPage((prev) => Math.floor((prev - 1) / 2));
                 }}
               >
                 ...
-              </a>
+              </button>
+
             </li>
           </>
         )}
         {renderTabs()}
         {currentPage !== pages && (
           <li className="mx-2 flex flex-column items-center hover:bg-gray-100">
-            <a
-              className="py-2 px-2"
-              href="#"
-              onClick={() => {
-                setCurrentPage((prev) => prev + 1);
-              }}
+            <button
+              className="p-2"
+              onClick={() => setCurrentPage((prev) => prev + 1)}
             >
-              <Image
-                className="object-cover"
-                src="/next-page.png"
-                alt="Next page"
-                width={18}
-                height={18}
-              />
-            </a>
+              <Image src="/next-page.png" alt="Next" width={18} height={18} />
+            </button>
           </li>
         )}
       </ul>

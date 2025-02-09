@@ -10,7 +10,7 @@ export const runtime = 'edge';
 
 export async function GET(request: NextRequest) {
   try {
-    const userAgent = request.headers.get('user-agent') || '';
+    const userAgent = request.headers.get("user-agent") || "Unknown";
     const searchParams = request.nextUrl.searchParams;
 
     const query = searchParams.get('query');
