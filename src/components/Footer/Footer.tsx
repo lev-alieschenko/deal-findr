@@ -1,26 +1,25 @@
 export const Footer = () => {
   return (
-    <footer className="absolute bottom-0 w-full flex flex-row justify-center py-3 bg-gray-100">
-      <div className="min-w-[300px] flex flex-row text-gray-700">
-        <a className="hover:underline" href="https://brandclick.com/privacy">
+    <footer className="w-full bg-gray-900 text-white py-6 shadow-md">
+      <div className="container mx-auto flex flex-col md:flex-row items-center justify-center space-y-2 md:space-y-0 md:space-x-6">
+        <a className="hover:underline transition duration-300" href="https://brandclick.com/privacy">
           Privacy
         </a>
-        <a
-          className="hover:underline ml-4 mr-4"
-          href="https://brandclick.com/terms-of-service"
-        >
+        <span className="hidden md:block text-gray-500">|</span>
+        <a className="hover:underline transition duration-300" href="https://brandclick.com/terms-of-service">
           Terms of Service
         </a>
-        <a
-          className="hover:underline ml-4 mr-4"
-          href="https://brandclick.com/for-advertisers"
-        >
+        <span className="hidden md:block text-gray-500">|</span>
+        <a className="hover:underline transition duration-300" href="https://brandclick.com/for-advertisers">
           For Advertisers
         </a>
-        <a className="hover:underline" href="https://brandclick.com/contact">
+        <span className="hidden md:block text-gray-500">|</span>
+        <a className="hover:underline transition duration-300" href="https://brandclick.com/contact">
           Contact Us
         </a>
       </div>
     </footer>
   );
 };
+
+export default Footer;
