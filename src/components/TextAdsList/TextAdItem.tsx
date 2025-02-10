@@ -136,7 +136,7 @@ export const TextAdItem: React.FC<TextAdItemProps> = ({
   const processedDescription = processDescription(description, 175);
 
   return (
-    <div className="w-full p-4 bg-white shadow-md rounded-2xl border border-gray-200 hover:shadow-lg transition duration-300">
+    <div className="w-full p-4 bg-white transition duration-300">
       <div className="flex items-center space-x-3 mb-2">
         {iconUrl && (
           <div className="mr-2">
