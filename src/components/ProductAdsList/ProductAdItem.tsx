@@ -62,7 +62,7 @@ export const ProductAdItem: React.FC<ProductAdItemProps> = ({
     !rating || rating < 0.5 ? <></> : <StarRating rating={rating} />;
 
   return (
-    <a href={url} className="block w-full py-4" onClick={handleClick}>
+    <a href={url} className="block w-full py-4" onClick={handleClick} target="_blank" rel="noopener noreferrer">
       <div
         className="w-full sm:w-32 h-fit transition-all duration-300
                     border border-gray-300 rounded-lg

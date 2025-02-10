@@ -47,16 +47,16 @@ export const Header = () => {
   };
 
   return pathname !== "/land" ? (
-    <header className="w-full pt-4">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row md:items-center">
-          <div className="flex justify-center md:justify-start py-4 md:py-0">
+    <header className="w-full bg-white">
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between">
+          <div className="flex justify-center md:justify-start">
             <a href="/" className="block">
               <Image
                 src="/deal-findr.png"
                 alt="Deal Findr logo"
-                width={96}
-                height={40}
+                width={120}
+                height={50}
                 priority
                 className="w-auto h-auto"
               />
@@ -83,7 +83,7 @@ export const Header = () => {
                   onPointerLeaveCapture={undefined}
                 />
               </div>
-              
+
             </form>
           </div>
         </div>

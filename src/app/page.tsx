@@ -60,7 +60,7 @@ export default function Home({
           params.append('subid', searchParams.subid);
         }
 
-        if(searchParams.t) {
+        if (searchParams.t) {
           params.append('t', searchParams.t);
         }
 
@@ -97,15 +97,22 @@ export default function Home({
 
   if (!searchParams.query) {
     return (
-      <div className='px-4 md:px-6 lg:px-40 pt-4 pb-12'>
-        <p className='font-black text-3xl'>Search ads!</p>
-        <ClientIP onIpAndMarketCodeReceived={handleIpAndMarketCodeReceived} />
+      <div className="container mx-auto flex flex-col items-center justify-center min-h-[50vh] px-4 md:px-6 lg:px-10 py-12 text-center">
+        <h1 className="text-4xl font-extrabold text-gray-900 mb-4">
+          🔍 Search Ads!
+        </h1>
+        <p className="text-lg text-gray-600 max-w-md">
+          Start searching to explore the best advertisements tailored just for you.
+        </p>
+        <div className="mt-6">
+          <ClientIP onIpAndMarketCodeReceived={handleIpAndMarketCodeReceived} />
+        </div>
       </div>
     );
   }
 
   return (
-    <main className='px-4 md:px-6 lg:px-40 pt-4 pb-12'>
+    <main className="container mx-auto px-4 md:px-6 lg:px-10 pt-4 pb-12">
       <ClientIP onIpAndMarketCodeReceived={handleIpAndMarketCodeReceived} />
       {isLoading ? (
         <SearchResultsLoading />

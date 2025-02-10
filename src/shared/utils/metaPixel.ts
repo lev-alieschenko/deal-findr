@@ -5,7 +5,6 @@ export const trackAdClick = async (adData: {
   currency?: string;
 }) => {
   if (typeof window === 'undefined') return;
-
   try {
     const ReactPixel = await import('react-facebook-pixel').then(
       (module) => module.default
