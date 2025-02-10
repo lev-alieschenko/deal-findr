@@ -137,7 +137,7 @@ export const TextAdItem: React.FC<TextAdItemProps> = ({
 
   return (
     <div className="w-full p-4 bg-white transition duration-300">
-      <div className="flex items-center space-x-3 mb-3">
+      <div className="flex items-center space-x-3 mb-2">
         {iconUrl && (
           <div className="w-5 h-5">
             <img src={iconUrl} alt="Icon" className="w-full h-full object-contain" />
