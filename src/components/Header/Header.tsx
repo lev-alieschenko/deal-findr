@@ -3,7 +3,7 @@
 import { Input } from "@material-tailwind/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import Image from "next/image";
+// import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useAppContext } from "../context";
@@ -51,15 +51,11 @@ export const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row md:items-center">
           <div className="flex justify-center md:justify-start py-4 md:py-0">
-            <a href="/" className="block">
-              <Image
-                src="/deal-findr.png"
-                alt="DealFinder logo"
-                width={96}
-                height={40}
-                priority
-                className="w-auto h-auto"
-              />
+            <a
+              href="/"
+              className="text-xl sm:text-2xl md:text-2xl font-bold text-black tracking-wide w-[150px] flex justify-center text-center"
+            >
+              <span>Deal-Findr</span>
             </a>
           </div>
           <div className="w-full md:ml-8 pb-4 md:pb-0">
@@ -83,7 +79,7 @@ export const Header = () => {
                   onPointerLeaveCapture={undefined}
                 />
               </div>
-              
+
             </form>
           </div>
         </div>
