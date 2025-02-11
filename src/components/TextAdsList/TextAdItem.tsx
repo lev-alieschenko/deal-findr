@@ -139,15 +139,18 @@ export const TextAdItem: React.FC<TextAdItemProps> = ({
     <div className="w-full p-4 bg-white transition duration-300">
       <div className="flex items-center space-x-3 mb-2">
         {iconUrl && (
-          <div className="w-5 h-5">
-            <img src={iconUrl} alt="Icon" className="w-full h-full object-contain" />
+          <div className="w-8 h-8 flex-shrink-0 rounded-full overflow-hidden">
+            <img src={iconUrl} alt="Icon" className="w-full h-full object-cover" />
           </div>
         )}
-        <div className="text-sm text-gray-700 truncate">
+        <div className="flex flex-col text-sm text-gray-700">
           {displayDomain && <span className="font-semibold text-gray-900">{displayDomain}</span>}
-          {displayUrl && <span className="ml-2 text-gray-500">{displayUrl}</span>}
+          {displayUrl && (
+            <span className="text-gray-600" dangerouslySetInnerHTML={{ __html: displayUrl }} />
+          )}
         </div>
       </div>
+
       <h2 className="text-lg font-semibold text-dark-blue hover:text-orange-500 transition duration-300 ease-in-out">
         <a
           rel="noopener noreferrer"

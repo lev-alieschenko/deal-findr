@@ -125,6 +125,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ results }) => {
                     url: ad.url,
                     description: ad.description,
                     displayDomain: ad.displayDomain,
+                    displayUrl: ad.displayUrl,
                     iconUrl: ad.iconUrl,
                   }))}
               />
