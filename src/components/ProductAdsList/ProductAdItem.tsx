@@ -62,7 +62,13 @@ export const ProductAdItem: React.FC<ProductAdItemProps> = ({
     !rating || rating < 0.5 ? <></> : <StarRating rating={rating} />;
 
   return (
-    <a href={url} className="block w-full py-4" onClick={handleClick} target="_blank" rel="noopener noreferrer">
+    <a
+      href={url}
+      className="block w-full py-4"
+      onClick={handleClick}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       <div
         className="w-full sm:w-32 h-fit transition-all duration-300
                     border border-gray-300 rounded-lg
@@ -77,7 +83,7 @@ export const ProductAdItem: React.FC<ProductAdItemProps> = ({
           />
         </div>
 
-        <div className="p-2 sm:p-1">
+        <div className="p-4 sm:p-3">
           <h2
             className="text-sm font-medium leading-tight mb-1
                         text-dark-blue hover:text-dark-orange hover:underline
@@ -93,12 +99,12 @@ export const ProductAdItem: React.FC<ProductAdItemProps> = ({
           <p className="text-sm font-medium mb-1">${price.toFixed(2)}</p>
 
           {truncatedAdditional && (
-            <p className="text-xs leading-tight text-gray-800 mb-1 line-clamp-2">
+            <p className="text-xs leading-tight text-gray-800 mb-2 line-clamp-2">
               {truncatedAdditional}
             </p>
           )}
 
-          <div className="mt-1">{rateStars}</div>
+          <div className="flex items-center space-x-1 mt-2">{rateStars}</div>
         </div>
       </div>
     </a>
