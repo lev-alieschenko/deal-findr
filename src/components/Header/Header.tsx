@@ -3,7 +3,7 @@
 import { Input } from "@material-tailwind/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import Image from "next/image";
+// import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useAppContext } from "../context";
@@ -50,18 +50,16 @@ export const Header = () => {
     <header className="w-full bg-white">
       <div className="container mx-auto px-4 py-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between">
-          <div className="flex justify-center md:justify-start">
-            <a href="/" className="block">
-              <Image
-                src="/deal-findr.png"
-                alt="Deal Findr logo"
-                width={120}
-                height={50}
-                priority
-                className="w-auto h-auto"
-              />
+          <div className="flex items-center justify-center md:justify-start">
+            <a
+              href="/"
+              className="text-xl sm:text-2xl md:text-2xl font-extrabold text-black tracking-wide w-[150px] flex justify-center text-center animate-fade-in"
+            >
+              <span>Deal-Findr</span>
             </a>
           </div>
+
+
           <div className="w-full md:ml-8 pb-4 md:pb-0">
             <form onSubmit={submitHandler} className="w-full">
               <div className="w-full md:max-w-[650px] shadow-md">
