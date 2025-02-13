@@ -6,15 +6,17 @@ export default function RedirectButton({
   text,
   isFirst = false,
   cid,
+  clickid,
 }: {
   text: string;
   isFirst?: boolean;
   cid: string;
+  clickid: string;
 }) {
   const router = useRouter();
 
   const handleClick = () => {
-    const url = `/?query=${encodeURIComponent(text)}${cid ? `&cid=${cid}` : ''}`;
+    const url = `/?query=${encodeURIComponent(text)}${cid ? `&cid=${encodeURIComponent(cid)}` : ''}${clickid ? `&clickid=${encodeURIComponent(clickid)}` : ''}`;
     router.push(url);
   };
 
