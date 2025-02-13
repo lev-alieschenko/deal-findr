@@ -24,7 +24,7 @@ export const TextAdItem: React.FC<TextAdItemProps> = ({
 }) => {
   const searchParams = useSearchParams();
   const cid = searchParams.get("cid");
-  const cid = searchParams.get("clickid");
+  const clickid = searchParams.get("clickid");
 
   const handleClick = () => {
     if (cid) {
