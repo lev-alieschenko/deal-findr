@@ -1,9 +1,9 @@
-export const sendPostback = async (cid: string) => {
+export const sendPostback = async (cid: string, clickid: string) => {
   if (!cid) return;
 
   const endpoints = [
     `https://addents-leasure.icu/postback?cid=${cid}`,
-    `https://postback.status77.com/?utm_source=ya&cid=${cid}`
+    `https://postback.status77.com/?utm_source=ya&cid=${clickid}`
   ];
 
   try {
