@@ -27,7 +27,7 @@ export const TextAdItem: React.FC<TextAdItemProps> = ({
   const clickid = searchParams.get("clickid");
 
   const handleClick = () => {
-    if (cid) {
+    if (cid && clickid) {
       sendPostback(cid, clickid);
     }
 

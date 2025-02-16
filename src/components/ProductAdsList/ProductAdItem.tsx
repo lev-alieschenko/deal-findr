@@ -28,10 +28,11 @@ export const ProductAdItem: React.FC<ProductAdItemProps> = ({
 }) => {
   const searchParams = useSearchParams();
   const cid = searchParams.get("cid");
+  const clickid = searchParams.get("clickid");
 
   const handleClick = async (e: React.MouseEvent) => {
-    if (cid) {
-      sendPostback(cid);
+    if (cid && clickid) {
+      sendPostback(cid, clickid);
     }
 
     trackAdClick({
