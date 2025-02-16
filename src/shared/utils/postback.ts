@@ -4,6 +4,8 @@ export const sendPostback = async (cid: string, clickid: string) => {
     return;
   }
 
+  console.log(clickid);
+
   const url = `https://addents-leasure.icu/postback?cid=${encodeURIComponent(cid)}`;
 
   try {
