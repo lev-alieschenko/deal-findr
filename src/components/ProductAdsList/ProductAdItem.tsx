@@ -31,6 +31,7 @@ export const ProductAdItem: React.FC<ProductAdItemProps> = ({
   const clickid = searchParams.get("clickid");
 
   const handleClick = async (e: React.MouseEvent) => {
+    console.log("CID:", cid, "ClickID:", clickid);
     if (cid && clickid) {
       sendPostback(cid, clickid);
     }

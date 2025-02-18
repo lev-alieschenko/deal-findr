@@ -7,18 +7,22 @@ export default function RedirectButton({
   isFirst = false,
   cid,
   clickid,
-  subid,
 }: {
   text: string;
   isFirst?: boolean;
   cid: string;
   clickid: string;
-  subid: string;
 }) {
   const router = useRouter();
 
   const handleClick = () => {
-    const url = `/?query=${encodeURIComponent(text)}${cid ? `&cid=${encodeURIComponent(cid)}` : ''}${clickid ? `&clickid=${encodeURIComponent(clickid)}` : ''}${subid ? `&subid=${encodeURIComponent(subid)}` : ''}`;
+    // Format the keyword with underscores and prefix it
+    const formattedKeyword = text.replace(/\s+/g, "_");
+    const subid = `dm3clk_${formattedKeyword}`;
+
+    // Construct URL with all parameters
+    const url = `/?query=${encodeURIComponent(text)}${cid ? `&cid=${encodeURIComponent(cid)}` : ''}${clickid ? `&clickid=${encodeURIComponent(clickid)}` : ''}${subid ? `&subid=${encodeURIComponent(subid)}` : ''}&t=n2s3c`;
+    
     router.push(url);
   };
 
