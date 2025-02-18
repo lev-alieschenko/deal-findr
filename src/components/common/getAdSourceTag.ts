@@ -11,6 +11,8 @@ export const getAdSourceTag = (t: string | null) => {
       return 'brandclick_n2s_sapip_3163_fb_dealfindr2';
   } else if (t === 'd2s') {
       return 'brandclick_d2s_sapip_3162_gdn_dealfindr2';
+  } else if (t === 'n2s3c') {
+      return 'brandclick_n2s3c_sapip_12647_dealfindr';
   } else {
       return 'brandclick_n2s_sapip_3163_fb_dealfindr2';
   }
