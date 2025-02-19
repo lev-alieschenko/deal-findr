@@ -21,23 +21,17 @@ export default function Landing({ searchParams }: any) {
         height={320}
         priority
       />
-      <div className="min-h-screen w-4/5 lg:w-2/5 pt-2 pb-20 sm:pb-12 mx-auto flex flex-col items-end">
-        <a href="/" className="block">
-          <Image
-            src="/deal-findr.png"
-            alt="DealFinder logo"
-            width={96}
-            height={40}
-            priority
-          />
+      <div className="min-h-screen w-4/5 lg:w-2/5 pt-8 pb-20 sm:pb-12 mx-auto flex flex-col items-end">
+        <a href="/" className="block text-xl sm:text-2xl md:text-2xl font-bold text-white">
+          <span>Deal-Findr</span>
         </a>
         {params.length > 0 && (
-          <p className="text-gray-200 mt-4 sm:mt-[30vh]">Searches</p>
+          <p className="text-gray-200 mt-10">Searches</p>
         )}
         {params.length > 0 ? (
           <RedirectButtonList searchParams={params} cid={cid} clickid={clickid} />
         ) : (
-          <p className="text-gray-500 text-center">No searches</p>
+          <p className="text-gray-200 text-center mt-10">No searches</p>
         )}
       </div>
       <Image
