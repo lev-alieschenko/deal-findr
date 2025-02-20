@@ -15,10 +15,20 @@ export default function RedirectButton({
 }) {
   const router = useRouter();
 
+  const getDeviceSuffix = () => {
+    console.log(navigator, "===Navigator Value Check====")
+    if (typeof navigator !== "undefined") {
+      const userAgent = navigator.userAgent.toLowerCase();
+      if (/iphone/.test(userAgent)) return "_i";
+      if (/android/.test(userAgent)) return "_a";
+    }
+    return "";
+  };
+
   const handleClick = () => {
     // Format the keyword with underscores and prefix it
     const formattedKeyword = text.replace(/\s+/g, "_");
-    const subid = `dm3clk_${formattedKeyword}`;
+    const subid = `dm3clk_${formattedKeyword}${getDeviceSuffix()}`;
 
     // Construct URL with all parameters
     const url = `/?query=${encodeURIComponent(text)}${cid ? `&cid=${encodeURIComponent(cid)}` : ''}${clickid ? `&clickid=${encodeURIComponent(clickid)}` : ''}${subid ? `&subid=${encodeURIComponent(subid)}` : ''}&t=n2s3c`;
