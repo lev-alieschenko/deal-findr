@@ -16,9 +16,9 @@ export default function RedirectButton({
   const router = useRouter();
 
   const getDeviceSuffix = () => {
-    console.log(navigator, "===Navigator Value Check====")
     if (typeof navigator !== "undefined") {
       const userAgent = navigator.userAgent.toLowerCase();
+      console.log(`Detected User-Agent: ${userAgent}`);
       if (/iphone/.test(userAgent)) return "_i";
       if (/android/.test(userAgent)) return "_a";
     }
