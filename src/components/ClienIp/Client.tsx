@@ -12,8 +12,8 @@ export const ClientIP = ({
   useEffect(() => {
     (async () => {
       try {
-        const response = await fetch('https://ipwho.is');
-        const { ip: ipAddress, country_code: countryCode } = await response.json();
+        const response = await fetch('https://ipinfo.io/json');
+        const { ip: ipAddress, country: countryCode } = await response.json();
 
         const marketCodes: Record<string, string> = {
           AR: 'es-AR', AU: 'en-AU', AT: 'de-AT', BE: 'nl-BE', 'BE-FR': 'fr-BE',
