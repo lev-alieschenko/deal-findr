@@ -10,15 +10,10 @@ export const ClientIP = ({
   const [marketCode, setMarketCode] = useState<string>('');
 
   useEffect(() => {
-    const getIP = async () => {
+    (async () => {
       try {
-        const response = await fetch('https://ipinfo.io/json');
-        const data = await response.json();
-
-        const ipAddress = data.ip;
-        const countryCode = data.country;
-
-        setIp(ipAddress);
+        const response = await fetch('https://ipwho.is');
+        const { ip: ipAddress, country_code: countryCode } = await response.json();
 
         const marketCodes: Record<string, string> = {
           AR: 'es-AR', AU: 'en-AU', AT: 'de-AT', BE: 'nl-BE', 'BE-FR': 'fr-BE',
@@ -37,8 +32,9 @@ export const ClientIP = ({
         };
 
         const code = marketCodes[countryCode] || 'en-US';
-        setMarketCode(code);
 
+        setIp(ipAddress);
+        setMarketCode(code);
         onIpAndMarketCodeReceived(ipAddress, code);
       } catch (error) {
         console.error('Failed to fetch IP:', error);
@@ -46,9 +42,7 @@ export const ClientIP = ({
         setMarketCode('en-US');
         onIpAndMarketCodeReceived('0.0.0.0', 'en-US');
       }
-    };
-
-    getIP();
+    })();
   }, [onIpAndMarketCodeReceived]);
 
   return <div className='text-sm text-gray-500 ml-2'></div>;
