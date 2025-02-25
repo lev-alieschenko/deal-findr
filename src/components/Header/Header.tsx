@@ -18,11 +18,7 @@ export const Header = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const formattedDomain = window.location.hostname
-        .replace(/\.[a-z]+$/, "") // Remove TLD (.com, .net, etc.)
-        .split("-") // Split by hyphen
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize each word
-        .join("-"); // Rejoin with hyphen
+      const formattedDomain = window.location.hostname.replace(/^www\./, '');
 
       setDomainName(formattedDomain);
     }

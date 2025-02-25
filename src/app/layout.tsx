@@ -1,4 +1,5 @@
-import React, { Suspense } from 'react';
+"use client"
+import React, { Suspense, useEffect, useState } from 'react';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Script from 'next/script';
@@ -12,11 +13,6 @@ import MetaPixelProvider from '@/components/MetaProvider/MetaProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export const metadata: Metadata = {
-  title: 'Deal Findr',
-  description: 'Deal Findr',
-};
-
 const GTM_ID = "GTM-T3MQNZ4Q";
 
 export default function RootLayout({
@@ -24,9 +20,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [siteTitle, setSiteTitle] = useState("Deal Findr");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const hostname = window.location.hostname.replace(/^www\./, ''); // Remove 'www.'
+      setSiteTitle(`${hostname}`);
+    }
+  }, []);
+
   return (
     <html lang='en' className='h-full'>
       <head>
+        <title>{siteTitle}</title>
+        <meta name="description" content="Find the best deals on the web!" />
+
         {/* Google Tag Manager Script */}
         <Script
           id="google-tag-manager"
