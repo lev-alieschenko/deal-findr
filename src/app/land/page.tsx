@@ -3,6 +3,7 @@
 import { getPParams } from "@/components/common/getPParams";
 import RedirectButtonList from "@/components/RedirectButtons/RedirectButtonList";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export const runtime = 'edge';
 
@@ -10,6 +11,19 @@ export default function Landing({ searchParams }: any) {
   const params = getPParams(searchParams);
   const cid = searchParams.cid;
   const clickid = searchParams.clickid;
+  const [domainName, setDomainName] = useState("Deal-Findr");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const formattedDomain = window.location.hostname
+        .replace(/\.[a-z]+$/, "") // Remove TLD (.com, .net, etc.)
+        .split("-") // Split by hyphen
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize each word
+        .join("-"); // Rejoin with hyphen
+
+      setDomainName(formattedDomain);
+    }
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-[#020024] via-[#0d0d3d] to-[#00d4ff] relative">
@@ -23,7 +37,7 @@ export default function Landing({ searchParams }: any) {
       />
       <div className="min-h-screen w-4/5 lg:w-2/5 pt-8 pb-20 sm:pb-12 mx-auto flex flex-col items-end">
         <a href="/" className="block text-xl sm:text-2xl md:text-2xl font-bold text-white">
-          <span>Deal-Findr</span>
+          <span>{domainName}</span>
         </a>
         {params.length > 0 && (
           <p className="text-gray-200 mt-10">Searches</p>

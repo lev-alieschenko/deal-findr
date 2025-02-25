@@ -67,7 +67,7 @@ export const Header = () => {
           <div className="flex justify-center md:justify-start py-4 md:py-0">
             <a
               href="/"
-              className="text-xl sm:text-2xl md:text-2xl font-bold text-black tracking-wide w-[150px] flex justify-center text-center"
+              className="text-xl sm:text-2xl md:text-2xl font-bold text-black tracking-wide flex justify-center text-center whitespace-nowrap w-auto md:w-[200px] lg:w-[250px]"
             >
               <span>{domainName}</span>
             </a>
