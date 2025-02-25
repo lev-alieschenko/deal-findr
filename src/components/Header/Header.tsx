@@ -14,6 +14,20 @@ export const Header = () => {
   const pathname = usePathname();
   const [inputValue, setInputValue] = useState("");
   const { query, setQuery } = useAppContext();
+  const [domainName, setDomainName] = useState("Deal-Findr");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const formattedDomain = window.location.hostname
+        .replace(/\.[a-z]+$/, "") // Remove TLD (.com, .net, etc.)
+        .split("-") // Split by hyphen
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize each word
+        .join("-"); // Rejoin with hyphen
+
+      setDomainName(formattedDomain);
+    }
+  }, []);
+
 
   useEffect(() => {
     const searchQuery = searchParams.get("query");
@@ -55,7 +69,7 @@ export const Header = () => {
               href="/"
               className="text-xl sm:text-2xl md:text-2xl font-bold text-black tracking-wide w-[150px] flex justify-center text-center"
             >
-              <span>Deal-Findr</span>
+              <span>{domainName}</span>
             </a>
           </div>
           <div className="w-full md:ml-8 pb-4 md:pb-0">

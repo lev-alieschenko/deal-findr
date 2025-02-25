@@ -98,7 +98,7 @@ export default function Home({
   if (!searchParams.query) {
     return (
       <div className='px-4 md:px-6 lg:px-40 pt-4 pb-12'>
-        <p className='font-black text-3xl'>Search ads!</p>
+        {/* <p className='font-black text-3xl'>Search ads!</p> */}
         <ClientIP onIpAndMarketCodeReceived={handleIpAndMarketCodeReceived} />
       </div>
     );
