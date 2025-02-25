@@ -15,7 +15,7 @@ export default function Landing({ searchParams }: any) {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const formattedDomain = window.location.hostname.replace(/^www\./, '');
+      const formattedDomain = window.location.hostname.replace(/^www\./, '').split('.')[0];
       setDomainName(formattedDomain);
     }
   }, []);

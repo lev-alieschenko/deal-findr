@@ -24,7 +24,7 @@ export default function RootLayout({
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const hostname = window.location.hostname.replace(/^www\./, ''); // Remove 'www.'
+      const hostname = window.location.hostname.replace(/^www\./, '').split('.')[0];
       setSiteTitle(`${hostname}`);
     }
   }, []);
