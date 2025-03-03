@@ -5,6 +5,8 @@ import { trackAdClick } from "@/shared/utils/metaPixel";
 import { sendPostback } from "@/shared/utils/postback";
 import { useSearchParams } from "next/navigation";
 
+export const runtime = 'edge';
+
 export interface TextAdItemProps {
   title: string;
   url: string;
@@ -25,11 +27,18 @@ export const TextAdItem: React.FC<TextAdItemProps> = ({
   const searchParams = useSearchParams();
   const cid = searchParams.get("cid");
   const clickid = searchParams.get("clickid");
+  const subid = searchParams.get("subid");
+  const marketCode = searchParams.get("marketCode");
+  const clientIP = searchParams.get("clientIP");
 
   const handleClick = () => {
     console.log("CID:", cid, "ClickID:", clickid);
     if (cid && clickid) {
       sendPostback(cid, clickid);
+    }
+
+    if (subid && marketCode && clientIP) {
+      
     }
 
     trackAdClick({

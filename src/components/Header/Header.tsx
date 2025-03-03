@@ -60,15 +60,18 @@ export const Header = () => {
     <header className="w-full pt-4">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row md:items-center">
-          <div className="flex justify-center md:justify-start py-4 md:py-0">
+          {/* Domain Name */}
+          <div className="flex items-center justify-center md:justify-start my-1 md:my-0">
             <a
               href="/"
-              className="text-xl sm:text-2xl md:text-2xl font-bold text-black tracking-wide flex justify-center text-center whitespace-nowrap w-auto md:w-[200px] lg:w-[250px]"
+              className="text-xl sm:text-2xl md:text-2xl font-bold text-black tracking-wide flex justify-center text-center whitespace-nowrap w-auto md:w-[150px] lg:w-[190px]"
             >
               <span>{domainName}</span>
             </a>
           </div>
-          <div className="w-full md:ml-8 pb-4 md:pb-0">
+
+          {/* Search Bar */}
+          <div className="w-full md:ml-2">
             <form onSubmit={submitHandler} className="w-full">
               <div className="w-full md:max-w-[650px] shadow-md">
                 <Input
@@ -89,10 +92,10 @@ export const Header = () => {
                   onPointerLeaveCapture={undefined}
                 />
               </div>
-
             </form>
           </div>
         </div>
+
       </div>
     </header>
   ) : null;
