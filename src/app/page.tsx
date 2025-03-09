@@ -49,6 +49,7 @@ export default function Home({
       try {
         const host = window.location.host;
         const protocol = window.location.protocol;
+        const startTime = performance.now();
 
         const params = new URLSearchParams({
           query: searchParams.query,
@@ -60,7 +61,7 @@ export default function Home({
           params.append('subid', searchParams.subid);
         }
 
-        if(searchParams.t) {
+        if (searchParams.t) {
           params.append('t', searchParams.t);
         }
 
@@ -75,8 +76,16 @@ export default function Home({
         }
 
         const data = await response.json();
+        const endTime = performance.now();
+        const timeSpent = ((endTime - startTime) / 1000).toFixed(2);
+        console.log(`Page Load Time: ${timeSpent}s`);
         setSearchResults(data);
         setError(null);
+
+        // If subid exists, insert data into Supabase
+        if (searchParams.subid) {
+          await insertDataIntoSupabase(protocol, host, searchParams.subid, timeSpent);
+        }
       } catch (err: any) {
         console.error('Search error:', err);
         setError(err);
@@ -88,6 +97,33 @@ export default function Home({
 
     fetchResults();
   }, [searchParams.query, searchParams.subid, searchParams.t, marketCode, clientIP]);
+
+  // Function to insert data into Supabase
+  const insertDataIntoSupabase = async (protocol: string, host: string, subid: string, timeSpent: string) => {
+    try {
+      const response = await fetch(`${protocol}//${host}/api/report`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: searchParams.query,
+          subid,
+          time_till_click: parseFloat(timeSpent),
+          ip: clientIP,
+          market_code: marketCode,
+          userAgent: navigator.userAgent,
+        }),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        console.log('Data successfully added to Supabase:', result);
+      } else {
+        console.error('Failed to insert into Supabase:', result.error);
+      }
+    } catch (error) {
+      console.error('Error inserting data into Supabase:', error);
+    }
+  };
 
   const handleIpAndMarketCodeReceived = (ip: string, code: string) => {
     console.log('Received IP:', ip, 'Market Code:', code);

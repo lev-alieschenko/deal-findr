@@ -18,12 +18,10 @@ export const Header = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const formattedDomain = window.location.hostname.replace(/^www\./, '').split('.')[0];
-
+      const formattedDomain = window.location.hostname.replace(/^www\./, '').split('.')[0].toUpperCase();
       setDomainName(formattedDomain);
     }
   }, []);
-
 
   useEffect(() => {
     const searchQuery = searchParams.get("query");
@@ -56,7 +54,7 @@ export const Header = () => {
     setInputValue(e.target.value);
   };
 
-  return pathname !== "/land" ? (
+  return pathname !== "/land" && pathname !== "/analytics" ? (
     <header className="w-full pt-4">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row md:items-center">

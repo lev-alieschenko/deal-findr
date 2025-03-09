@@ -20,7 +20,8 @@
     "qs": "^6.13.0",
     "react": "^18",
     "react-dom": "^18",
-    "react-facebook-pixel": "^1.0.4"
+    "react-facebook-pixel": "^1.0.4",
+    "recharts": "^2.15.1"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.6",
