@@ -33,6 +33,8 @@ export default function Home({
   const [searchResults, setSearchResults] = useState<any>(null);
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [clicks, setClicks] = useState(0);
+  const [impressions, setImpressions] = useState(0);
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -82,7 +84,8 @@ export default function Home({
         setSearchResults(data);
         setError(null);
 
-        // If subid exists, insert data into Supabase
+        setImpressions((prevImpressions) => prevImpressions + 1);
+        setClicks((prevClicks) => prevClicks + 1);
         if (searchParams.subid) {
           await insertDataIntoSupabase(protocol, host, searchParams.subid, timeSpent);
         }
@@ -101,6 +104,8 @@ export default function Home({
   // Function to insert data into Supabase
   const insertDataIntoSupabase = async (protocol: string, host: string, subid: string, timeSpent: string) => {
     try {
+      // Calculate CTR (Clicks / Impressions)
+      const ctr = impressions > 0 ? (clicks / impressions) : 0;
       const response = await fetch(`${protocol}//${host}/api/report`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -111,6 +116,7 @@ export default function Home({
           ip: clientIP,
           market_code: marketCode,
           userAgent: navigator.userAgent,
+          ctr,
         }),
       });
 
