@@ -56,7 +56,7 @@ export const Header = () => {
 
   return pathname !== "/land" && pathname !== "/analytics" ? (
     <header className="w-full pt-4">
-      <div className="w-full max-w-[1280px] mx-auto px-4">
+      <div className="w-full px-4 sm:px-6 md:px-8 lg:px-16 xl:px-32">
         <div className="flex flex-col md:flex-row md:items-center">
           {/* Domain Name */}
           <div className="flex items-center justify-center md:justify-start my-1 md:my-0">
