@@ -31,7 +31,7 @@ export default function Landing({ searchParams }: any) {
         priority
       />
       <div className="min-h-screen w-4/5 lg:w-2/5 pt-8 pb-20 sm:pb-12 mx-auto flex flex-col items-end">
-        <a href="/" className="block text-xl sm:text-2xl md:text-2xl font-bold text-white">
+        <a href="/" className="block text-lg sm:text-lg md:text-lg font-bold text-white">
           <span>{domainName}</span>
         </a>
         {params.length > 0 && (

@@ -56,15 +56,15 @@ export const Header = () => {
 
   return pathname !== "/land" && pathname !== "/analytics" ? (
     <header className="w-full pt-4">
-      <div className="container mx-auto px-4">
+      <div className="w-full max-w-[1280px] mx-auto px-4">
         <div className="flex flex-col md:flex-row md:items-center">
           {/* Domain Name */}
           <div className="flex items-center justify-center md:justify-start my-1 md:my-0">
             <a
               href="/"
-              className="text-xl sm:text-2xl md:text-2xl font-bold text-black tracking-wide flex justify-center text-center whitespace-nowrap w-auto md:w-[150px] lg:w-[190px]"
+              className="text-lg sm:text-lg md:text-lg font-bold text-black tracking-wide flex justify-start whitespace-nowrap"
             >
-              <span>{domainName}</span>
+              <span className="truncate max-w-full md:max-w-[200px] lg:max-w-[300px]">{domainName}</span>
             </a>
           </div>
 
