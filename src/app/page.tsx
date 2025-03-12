@@ -35,6 +35,7 @@ export default function Home({
   const [isLoading, setIsLoading] = useState(false);
   const [clicks, setClicks] = useState(0);
   const [impressions, setImpressions] = useState(0);
+  console.log(searchParams, "------")
 
   useEffect(() => {
     const fetchResults = async () => {
