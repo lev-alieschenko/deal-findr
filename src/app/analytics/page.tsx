@@ -1,241 +1,281 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { DatePicker } from 'antd';
-import dayjs from 'dayjs';
-// import "antd/dist/reset.css";
+import { useEffect, useState } from "react";
+import dayjs from "dayjs";
+import Image from "next/image";
+import { Table, DatePicker, Input, Space, Button } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+import { ColumnType } from "antd/es/table";
 
-// Extending dayjs with the isBetween plugin
-import isBetween from 'dayjs/plugin/isBetween';
+// Extend dayjs with the isBetween plugin for date filtering
+import isBetween from "dayjs/plugin/isBetween";
 dayjs.extend(isBetween);
 
-export const runtime = 'edge';
+const { RangePicker } = DatePicker;
 
 interface ReportData {
-    subid: string;
-    time_till_click: number;
-    anura_score: number;
-    created_at: string;
+  subid: string;
+  name: string;
+  time_till_click: number;
+  anura_score: number;
+  created_at: string;
+  client_ip: string;
+  userAgent: string;
 }
 
 export default function Analytics() {
-    const [data, setData] = useState<{
-        timeTillClickData: { subid: string, time_till_click: number, created_at: string }[];
-        ctrData: { subid: string, ctr: number, created_at: string }[];
-        anuraScoreData: { subid: string, anura_score: number, created_at: string }[];
-    }>({
-        timeTillClickData: [],
-        ctrData: [],
-        anuraScoreData: [],
-    });
-    const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [domainName, setDomainName] = useState("Deal-Findr");
-    const [apiUrl, setApiUrl] = useState<string>("");
-    const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs] | null>(null); // Date range state
+  const [domainName, setDomainName] = useState<string>("");
+  const [data, setData] = useState<ReportData[]>([]);
+  const [apiUrl, setApiUrl] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [dateRange, setDateRange] = useState<[dayjs.Dayjs | null, dayjs.Dayjs | null]>([null, null]);
+  const [searchText, setSearchText] = useState<string>("");
+  const [filteredData, setFilteredData] = useState<ReportData[]>(data);
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 5,
+  });
 
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            const formattedDomain = window.location.hostname.replace(/^www\./, '').split('.')[0].toUpperCase();
-            setDomainName(formattedDomain);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const formattedDomain = window.location.hostname.replace(/^www\./, "").split(".")[0].toUpperCase();
+      setDomainName(formattedDomain);
+      setApiUrl(`${window.location.protocol}//${window.location.host}/api/report`);
+    }
+  }, []);
 
-            // Set API URL dynamically
-            setApiUrl(`${window.location.protocol}//${window.location.host}/api/report`);
+  useEffect(() => {
+    if (!apiUrl) return;
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+          throw new Error("Failed to fetch report data");
         }
-    }, []);
-
-    useEffect(() => {
-        if (!apiUrl) return;
-
-        const fetchData = async () => {
-            try {
-                const response = await fetch(apiUrl);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch report data');
-                }
-                const reports = await response.json();
-
-                const aggregatedData: { [key: string]: ReportData } = {};
-
-                reports.forEach((report: any) => {
-                    const { subid, time_till_click, anura_score, created_at } = report;
-                    if (!aggregatedData[subid]) {
-                        aggregatedData[subid] = {
-                            subid,
-                            time_till_click: 0,
-                            anura_score: 0,
-                            created_at: created_at,
-                        };
-                    }
-
-                    aggregatedData[subid].time_till_click += time_till_click;
-                    aggregatedData[subid].anura_score += anura_score;
-                });
-
-                // Process each metric correctly:
-                const timeTillClickData = Object.values(aggregatedData).map((item) => ({
-                    subid: item.subid,
-                    time_till_click: item.time_till_click,
-                    created_at: item.created_at,
-                }));
-
-                const ctrData = Object.values(aggregatedData).map((item) => ({
-                    subid: item.subid,
-                    ctr: 0, // If CTR is not needed, you can leave it at 0
-                    created_at: item.created_at,
-                }));
-
-                const anuraScoreData = Object.values(aggregatedData).map((item) => ({
-                    subid: item.subid,
-                    anura_score: item.anura_score,
-                    created_at: item.created_at,
-                }));
-
-                // Set the data for each chart
-                setData({ timeTillClickData, ctrData, anuraScoreData });
-            } catch (err: any) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, [apiUrl]);
-
-    // Filter the data based on the selected date range
-    const filterDataByDateRange = (chartData: any[]) => {
-        return chartData.filter((item) => {
-            if (!dateRange) return true;
-            const itemDate = dayjs(item.created_at);
-            return itemDate.isBetween(dateRange[0], dateRange[1], 'day', '[]');
-        });
+        const reports = await response.json();
+        setData(reports);
+        setFilteredData(reports); // Initial filtered data will be the same as fetched data
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-[#020024] via-[#0d0d3d] to-[#00d4ff] relative">
-            <Image
-                src="/curved-wings.png"
-                alt="Left Wing"
-                className="w-1/4 fixed bottom-16 left-0 hidden lg:block"
-                width={320}
-                height={320}
-                priority
-            />
-            <div className="min-h-screen w-4/5 lg:w-2/5 pt-8 pb-20 sm:pb-12 mx-auto flex flex-col items-end">
-                <a href="/" className="block text-lg sm:text-lg md:text-lg font-bold text-white mb-10">
-                    {domainName}
-                </a>
+    fetchData();
+  }, [apiUrl]);
 
-                {!loading && (
-                    <div className="mb-6 w-full max-w-md">
-                        <DatePicker.RangePicker
-                            onChange={(dates) => setDateRange(dates as [dayjs.Dayjs, dayjs.Dayjs] | null)}
-                            format="YYYY-MM-DD"
-                            className="w-full border-2 border-gray-500 bg-white text-gray-800 rounded-lg p-2 text-lg shadow-md hover:border-indigo-400 focus:ring-2 focus:ring-indigo-500"
-                        />
-                    </div>
-                )}
+  // Filter data by date range and search text
+  const filterData = () => {
+    return data.filter((item) => {
+      const matchesSearchText =
+        item.subid.toLowerCase().includes(searchText.toLowerCase()) ||
+        dayjs(item.created_at).format("YYYY.MM.DD HH:mm").includes(searchText);
 
+      const matchesDateRange =
+        (dateRange[0] === null || dayjs(item.created_at).isAfter(dateRange[0], "day")) &&
+        (dateRange[1] === null || dayjs(item.created_at).isBefore(dateRange[1], "day"));
 
-                {loading ? (
-                    <p className="text-lg">Loading...</p>
-                ) : error ? (
-                    <p className="text-red-500 text-lg">{error}</p>
-                ) : (
-                    <div className="w-full max-w-4xl space-y-10 mt-5">
-                        {/* Time Till Click Chart */}
-                        <div className="bg-white bg-opacity-10 p-6 rounded-lg shadow-lg hover:bg-indigo-500 hover:bg-opacity-20">
-                            <h2 className="text-2xl font-semibold mb-4 text-highlight">Time Till Click per Subid</h2>
-                            <ResponsiveContainer width="100%" height={300}>
-                                <BarChart data={filterDataByDateRange(data.timeTillClickData)}>
-                                    <XAxis
-                                        dataKey="subid"
-                                        tick={{ fill: 'white' }}
-                                        angle={-45}
-                                        textAnchor="end"
-                                        height={80}
-                                        tickFormatter={(value) => value.length > 10 ? `${value.substring(0, 10)}...` : value}
-                                        tickLine={false}
-                                        style={{ wordBreak: 'break-word' }}
-                                    />
+      return matchesSearchText && matchesDateRange;
+    });
+  };
 
-                                    <YAxis tick={{ fill: 'white' }} />
-                                    <Tooltip
-                                        contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', color: 'white' }}
-                                        formatter={(value) => (typeof value === 'number' ? value.toFixed(2) : value)}
-                                    />
-                                    <Legend />
-                                    <Bar dataKey="time_till_click" fill="#4F46E5" name="Time Till Click" />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </div>
+  useEffect(() => {
+    setFilteredData(filterData()); // Update filtered data when search or date range changes
+  }, [searchText, dateRange, data]);
 
-                        {/* Click Through Rate (CTR) Chart */}
-                        <div className="bg-white bg-opacity-10 p-6 rounded-lg shadow-lg hover:bg-indigo-500 hover:bg-opacity-20">
-                            <h2 className="text-2xl font-semibold mb-4 text-highlight">Click Through Rate (CTR) per Subid</h2>
-                            <ResponsiveContainer width="100%" height={300}>
-                                <BarChart data={filterDataByDateRange(data.ctrData)}>
-                                    <XAxis
-                                        dataKey="subid"
-                                        tick={{ fill: 'white' }}
-                                        angle={-45}
-                                        textAnchor="end"
-                                        height={80}
-                                        tickFormatter={(value) => value.length > 10 ? `${value.substring(0, 10)}...` : value}
-                                        tickLine={false}
-                                        style={{ wordBreak: 'break-word' }}
-                                    />
-                                    <YAxis tick={{ fill: 'white' }} />
-                                    <Tooltip
-                                        contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', color: 'white' }}
-                                        formatter={(value) => (typeof value === 'number' ? value.toFixed(2) : value)}
-                                    />
-                                    <Legend />
-                                    <Bar dataKey="ctr" fill="#10B981" name="Click Through Rate (CTR)" />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </div>
+  // Filter column search implementation
+  const getColumnSearchProps = (dataIndex: keyof ReportData): ColumnType<ReportData> => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+      <div className="p-4">
+        <Input
+          autoFocus
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0] || ""}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => confirm()}
+          className="mb-2"
+        />
+        <Space>
+          <Button
+            onClick={() => {
+              setSelectedKeys([]);
+              clearFilters?.();
+              confirm();
+            }}
+            size="small"
+            className="text-red-500"
+          >
+            Clear
+          </Button>
+          <Button onClick={() => confirm()} size="small" className="text-blue-500">
+            Search
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />,
+    onFilter: (value, record) =>
+      record[dataIndex]?.toString().toLowerCase().includes((value as string).toLowerCase()),
+  });
+  const columns: ColumnType<ReportData>[] = [
+    { title: "Sub ID", dataIndex: "subid", key: "subid", width: 150, ...getColumnSearchProps("subid") },
+    { title: "Name", dataIndex: "name", key: "name", width: 150, ...getColumnSearchProps("name") },
+    { title: "Time Till Click", dataIndex: "time_till_click", key: "time_till_click", width: 200 },
+    { title: "Anura Score", dataIndex: "anura_score", key: "anura_score", width: 200 },
+  ];
 
-                        {/* Anura Fraud Score Chart */}
-                        <div className="bg-white bg-opacity-10 p-6 rounded-lg shadow-lg hover:bg-indigo-500 hover:bg-opacity-20">
-                            <h2 className="text-2xl font-semibold mb-4 text-highlight">Anura Fraud Score per Subid</h2>
-                            <ResponsiveContainer width="100%" height={300}>
-                                <BarChart data={filterDataByDateRange(data.anuraScoreData)}>
-                                    <XAxis
-                                        dataKey="subid"
-                                        tick={{ fill: 'white' }}
-                                        angle={-45}
-                                        textAnchor="end"
-                                        height={80}
-                                        tickFormatter={(value) => value.length > 10 ? `${value.substring(0, 10)}...` : value}
-                                        tickLine={false}
-                                        style={{ wordBreak: 'break-word' }}
-                                    />
-                                    <YAxis tick={{ fill: 'white' }} />
-                                    <Tooltip
-                                        contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', color: 'white' }}
-                                        formatter={(value) => (typeof value === 'number' ? value.toFixed(2) : value)}
-                                    />
-                                    <Legend />
-                                    <Bar dataKey="anura_score" fill="#EF4444" name="Anura Fraud Score" />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </div>
-                    </div>
-                )}
+  const expandedRowRender = (record: ReportData) => {
+    const filteredRecords = data.filter((item) => item.subid === record.subid);
+
+    // Group records by created_at (date)
+    const groupedByDate = filteredRecords.reduce((groups: any, item: any) => {
+      const date = dayjs(item.created_at).format("YYYY-MM-DD");
+      if (!groups[date]) {
+        groups[date] = [];
+      }
+      groups[date].push(item);
+      return groups;
+    }, {});
+
+    return Object.keys(groupedByDate).map((date) => (
+      <div key={date}>
+        <h3 className="text-lg font-semibold mb-2">{date}</h3>
+        <table className="table-auto w-full mb-4">
+          <thead>
+            <tr>
+              <th className="border px-4 py-2">Sub ID</th>
+              <th className="border px-4 py-2">Name</th>
+              <th className="border px-4 py-2">Time Till Click</th>
+              <th className="border px-4 py-2">Anura Score</th>
+              <th className="border px-4 py-2">Created At</th>
+              <th className="border px-4 py-2">Client IP</th>
+              <th className="border px-4 py-2">User Agent</th>
+            </tr>
+          </thead>
+          <tbody>
+            {groupedByDate[date].map((item: ReportData) => (
+              <tr key={item.created_at}>
+                <td className="border px-4 py-2">{item.subid}</td>
+                <td className="border px-4 py-2">{item.name}</td>
+                <td className="border px-4 py-2">{item.time_till_click}</td>
+                <td className="border px-4 py-2">{item.anura_score}</td>
+                <td className="border px-4 py-2">{dayjs(item.created_at).format("YYYY-MM-DD")}</td>
+                <td className="border px-4 py-2">{item.client_ip}</td>
+                <td className="border px-4 py-2">{item.userAgent}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    ));
+  };
+
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    setPagination({ current: page, pageSize });
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-[#020024] via-[#0d0d3d] to-[#00d4ff] relative">
+      <Image src="/curved-wings.png" alt="Left Wing" className="w-1/4 fixed bottom-16 left-0 hidden lg:block" width={320} height={320} priority />
+      <div className="min-h-screen w-4/5 lg:w-2/5 pt-8 pb-20 sm:pb-12 mx-auto flex flex-col items-end">
+        <a href="/" className="block text-lg font-bold text-white mb-10">{domainName}</a>
+
+        {!loading && (
+          <div className="mb-6 w-full max-w-md">
+            <div className="flex flex-wrap justify-between gap-4">
+              <div className="w-full sm:w-auto flex-1">
+                <RangePicker
+                  onChange={(dates) => setDateRange(dates ? [dates[0], dates[1]] : [null, null])}
+                  format="YYYY-MM-DD"
+                  className="w-full border-2 border-gray-500 bg-white text-gray-800 rounded-lg p-2 shadow-md hover:border-indigo-400 focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+              <div className="w-full sm:w-auto flex-1">
+                <Input
+                  placeholder="Search by Sub ID or Date"
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  prefix={<SearchOutlined />}
+                  className="w-full border-2 border-gray-500 bg-white text-gray-800 rounded-lg p-2 shadow-md"
+                />
+              </div>
             </div>
+          </div>
+        )}
 
-            <Image
-                src="/curved-wings.png"
-                alt="Right Wing"
-                className="w-1/4 fixed bottom-16 right-0 transform scale-x-[-1] hidden lg:block"
-                width={320}
-                height={320}
-                priority
-            />
-        </div>
-    );
+        {loading ? (
+          <p className="text-lg">Loading...</p>
+        ) : error ? (
+          <p className="text-red-500 text-lg">{error}</p>
+        ) : (
+          <>
+            <div className="mb-6 w-full">
+              <h2 className="text-2xl font-semibold text-blue-400 mb-4">Time Till Click Data</h2>
+              <Table
+                columns={columns}
+                dataSource={filteredData}
+                rowKey={(record) => `${record.subid}-${record.created_at}`}
+                expandable={{
+                  expandedRowRender,
+                  rowExpandable: (record) => true,
+                }}
+                pagination={{
+                  ...pagination,
+                  onChange: handlePaginationChange,
+                }}
+                loading={loading}
+                rowClassName="hover:bg-gray-100"
+                scroll={{ x: "max-content" }} // Make the table horizontally scrollable
+              />
+            </div><div className="mb-6 w-full">
+              <h2 className="text-2xl font-semibold text-green-400 mb-4">Click Through Rate (CTR) Data</h2>
+              <Table
+                columns={columns}
+                dataSource={filteredData}
+                rowKey={(record) => `${record.subid}-${record.created_at}`}
+                expandable={{
+                  expandedRowRender,
+                  rowExpandable: (record) => true,
+                }}
+                pagination={{
+                  ...pagination,
+                  onChange: handlePaginationChange,
+                }}
+                loading={loading}
+                rowClassName="hover:bg-gray-100"
+                scroll={{ x: "max-content" }} />
+            </div><div className="w-full">
+              <h2 className="text-2xl font-semibold text-red-400 mb-4">Anura Fraud Score Data</h2>
+              <Table
+                columns={columns}
+                dataSource={filteredData}
+                rowKey={(record) => `${record.subid}-${record.created_at}`}
+                expandable={{
+                  expandedRowRender,
+                  rowExpandable: (record) => true,
+                }}
+                pagination={{
+                  ...pagination,
+                  onChange: handlePaginationChange,
+                }}
+                loading={loading}
+                rowClassName="hover:bg-gray-100"
+                scroll={{ x: "max-content" }} />
+            </div>
+          </>
+        )}
+      </div>
+      <Image
+        src="/curved-wings.png"
+        alt="Right Wing"
+        className="w-1/4 fixed bottom-16 right-0 transform scale-x-[-1] hidden lg:block"
+        width={320}
+        height={320}
+        priority
+      />
+    </div>
+  );
 }
