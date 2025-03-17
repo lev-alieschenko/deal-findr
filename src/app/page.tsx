@@ -35,7 +35,6 @@ export default function Home({
   const [isLoading, setIsLoading] = useState(false);
   const [clicks, setClicks] = useState(0);
   const [impressions, setImpressions] = useState(0);
-  console.log(searchParams, "------")
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -51,6 +50,7 @@ export default function Home({
       setIsLoading(true);
       try {
         const host = window.location.host;
+        const domainName = window.location.hostname.replace(/^www\./, '').split('.')[0].toUpperCase();
         const protocol = window.location.protocol;
         const startTime = performance.now();
 
@@ -58,6 +58,7 @@ export default function Home({
           query: searchParams.query,
           marketCode,
           clientIP: clientIP,
+          hostName: domainName
         });
 
         if (searchParams.subid) {

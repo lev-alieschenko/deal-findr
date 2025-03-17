@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
 
     const query = searchParams.get('query');
     const t = searchParams.get('t');
+    const hostName = searchParams.get('hostName');
     const subid = searchParams.get('subid');
     const clientIP = searchParams.get('clientIP');
     const marketCode = searchParams.get('marketCode');
@@ -45,7 +46,7 @@ export async function GET(request: NextRequest) {
 
     const jwt = await generateJWT();
     const accessToken = await getAccessToken(jwt);
-    const adSourceTag = await getAdSourceTag(t);
+    const adSourceTag = await getAdSourceTag(t, hostName);
     const searchResults = await searchRequest(
       accessToken,
       query,
