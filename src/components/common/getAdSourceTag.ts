@@ -41,7 +41,7 @@ export const getAdSourceTag = (t: string | null, hostName: string | null) => {
 
   const normalizedHost = hostName?.toUpperCase(); // Normalize for case-insensitive comparison
 
-  if (normalizedHost === 'LALHOST' || normalizedHost === 'DEAL-FINDR') {
+  if (normalizedHost === 'LOCALHOST' || normalizedHost === 'DEAL-FINDR') {
     return dealAdSourceMap[t ?? ''] || 'brandclick_n2s_sapip_3163_fb_dealfindr2';
   }
 
