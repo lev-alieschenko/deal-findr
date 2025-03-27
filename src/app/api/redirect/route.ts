@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+//specialReferrers
 const specialReferrers = ["yarb.net"];
 const destination = "https://redirect-destination.com";
 
