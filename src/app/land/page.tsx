@@ -25,7 +25,7 @@ export default function Landing({ searchParams }: any) {
         try {
           const protocol = window.location.protocol;
           const host = window.location.host;
-          const response = await fetch(`${protocol}//${host}/api/redirect`);
+          const response = await fetch(`${protocol}//${host}/api/refer`);
           const html = await response.text();
 
           if (html.includes("Redirecting")) {
