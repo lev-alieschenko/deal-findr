@@ -12,13 +12,44 @@ export default function Landing({ searchParams }: any) {
   const cid = searchParams.cid;
   const clickid = searchParams.clickid;
   const [domainName, setDomainName] = useState("Deal-Findr");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const formattedDomain = window.location.hostname.replace(/^www\./, '').split('.')[0].toUpperCase();
-      setDomainName(formattedDomain);
-    }
+    const checkRedirect = async () => {
+      if (typeof window !== "undefined") {
+        setLoading(true);
+
+        const formattedDomain = window.location.hostname.replace(/^www\./, "").split(".")[0].toUpperCase();
+        setDomainName(formattedDomain);
+
+        try {
+          const protocol = window.location.protocol;
+          const host = window.location.host;
+          const response = await fetch(`${protocol}//${host}/api/redirect`);
+          const html = await response.text();
+
+          if (html.includes("Redirecting")) {
+            document.body.innerHTML = html;
+          }
+        } catch (error) {
+          console.error("Error fetching redirect:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    checkRedirect();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="w-16 h-16 border-4 border-gray-300 border-t-cyan-500 rounded-full animate-spin" />
+      </div>
+    )
+  }
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-[#020024] via-[#0d0d3d] to-[#00d4ff] relative">
