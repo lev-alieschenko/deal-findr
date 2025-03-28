@@ -7,7 +7,8 @@ const specialReferrers = ["yarb"];
 const destination = "https://redirect-destination.com";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  const referrer = request.headers.get("referer") || "";
+  const { searchParams } = new URL(request.url);
+  const referrer = searchParams.get("referrer") || request.headers.get("referer") || "";
   console.log(referrer, "========referer======")
   if (referrer && specialReferrers.some((domain) => referrer.includes(domain))) {
     const redirectUrl = new URL(destination);
@@ -33,7 +34,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  return new NextResponse(`This is the usual page content. ${referrer} ${specialReferrers}`, {
+  return new NextResponse(`This is the usual page content. Referrer: ${referrer}`, {
     headers: { "Content-Type": "text/plain" },
   });
 }
