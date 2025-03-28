@@ -14,6 +14,8 @@ export default function Landing({ searchParams }: any) {
   const [domainName, setDomainName] = useState("Deal-Findr");
   const [loading, setLoading] = useState(true);
 
+  console.log(params, "-------------params------------------")
+
   useEffect(() => {
     const checkRedirect = async () => {
       if (typeof window !== "undefined") {
