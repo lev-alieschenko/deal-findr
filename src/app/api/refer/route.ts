@@ -8,7 +8,7 @@ const destination = "https://redirect-destination.com";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const referrer = request.headers.get("referer") || "";
-
+  console.log(referrer, "========referer======")
   if (referrer && specialReferrers.some((domain) => referrer.includes(domain))) {
     const redirectUrl = new URL(destination);
     redirectUrl.searchParams.set("source", "redirect");
