@@ -11,10 +11,9 @@ export default function Landing({ searchParams }: any) {
   const params = getPParams(searchParams);
   const cid = searchParams.cid;
   const clickid = searchParams.clickid;
+  const subid = searchParams.subid;
   const [domainName, setDomainName] = useState("Deal-Findr");
   const [loading, setLoading] = useState(true);
-
-  console.log(params, "-------------params------------------", searchParams)
 
   useEffect(() => {
     const checkRedirect = async () => {
@@ -28,7 +27,7 @@ export default function Landing({ searchParams }: any) {
           const protocol = window.location.protocol;
           const host = window.location.host;
           const referrer = document.referrer;
-          const response = await fetch(`${protocol}//${host}/api/refer?referrer=${encodeURIComponent(referrer)}`);
+          const response = await fetch(`${protocol}//${host}/api/refer?referrer=${encodeURIComponent(referrer)}&query=${params[0]}&cid=${cid}&clickid=${clickid}&subid=${subid}&t=n2s3c`);
           const html = await response.text();
 
           if (html.includes("Redirecting")) {

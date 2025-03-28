@@ -2,16 +2,26 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = 'edge';
 
-//specialReferrers
-const specialReferrers = ["yarb-test.net"];
-const destination = "https://deal-findr.com/?query={pull from p1=param}&clickid={pull from clickid= param}&subid={pull from subid= param}&t=n2s3c";
+// specialReferrers
+const specialReferrers = ["yarb.net"];
+const destination = "https://deal-findr.com";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);
   const referrer = searchParams.get("referrer") || request.headers.get("referer") || "";
+  const query = searchParams.get("query") || "";
+  const cid = searchParams.get("cid") || "";
+  const clickid = searchParams.get("clickid") || "";
+  const subid = searchParams.get("subid") || "";
+  const t = searchParams.get("t") || "";
+  
   if (referrer && specialReferrers.some((domain) => referrer.includes(domain))) {
     const redirectUrl = new URL(destination);
-    redirectUrl.searchParams.set("source", "redirect");
+    redirectUrl.searchParams.set("query", query);
+    redirectUrl.searchParams.set("cid", cid);
+    redirectUrl.searchParams.set("clickid", clickid);
+    redirectUrl.searchParams.set("subid", subid);
+    redirectUrl.searchParams.set("t", t);
 
     return new NextResponse(
       `
