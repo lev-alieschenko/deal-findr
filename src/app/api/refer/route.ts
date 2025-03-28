@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const runtime = 'edge';
 
 //specialReferrers
-const specialReferrers = ["yarb.net"];
+const specialReferrers = ["yarb"];
 const destination = "https://redirect-destination.com";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
