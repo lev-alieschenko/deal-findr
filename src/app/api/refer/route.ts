@@ -4,7 +4,7 @@ export const runtime = 'edge';
 
 //specialReferrers
 const specialReferrers = ["yarb.net"];
-const destination = "https://redirect-destination.com";
+const destination = "https://deal-findr.com/?query={pull from p1=param}&clickid={pull from clickid= param}&subid={pull from subid= param}&t=n2s3c";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);
