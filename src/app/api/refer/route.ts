@@ -33,7 +33,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  return new NextResponse("This is the usual page content.", {
+  return new NextResponse(`This is the usual page content. ${referrer} ${specialReferrers}`, {
     headers: { "Content-Type": "text/plain" },
   });
 }
