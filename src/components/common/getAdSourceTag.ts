@@ -173,15 +173,15 @@ export const getAdSourceTag = (t: string | null, hostName: string | null) => {
     return supersearchesAdSourceMap[t ?? ''] || 'brandclick_n2s_sapip_3163_fb_supersearches';
   }
 
-  if (normalizedHost === 'TOPSEARCHES') {
+  if (normalizedHost === 'TOPSEARCHS') {
     return topsearchsAdSourceMap[t ?? ''] || 'brandclick_n2s_sapip_3163_fb_topsearchs';
   }
 
-  if (normalizedHost === 'TOPSEARCHELISTS') {
+  if (normalizedHost === 'TOPSEARCHLISTS') {
     return topsearchlistsAdSourceMap[t ?? ''] || 'brandclick_n2s_sapip_3163_fb_topsearchlists';
   }
 
-  if (normalizedHost === 'TOPSEARCHELIST') {
+  if (normalizedHost === 'TOPSEARCHLIST') {
     return topsearchlistAdSourceMap[t ?? ''] || 'brandclick_n2s_sapip_3163_fb_topsearchlist';
   }
 

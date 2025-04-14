@@ -23,6 +23,19 @@ interface SearchParams {
   t?: string;
 }
 
+interface AnuraResponse {
+  score: string;
+  riskLevel?: string;
+  [key: string]: any;
+}
+
+// Extend window for Anura callback
+declare global {
+  interface Window {
+    handleAnuraResponse?: (response: AnuraResponse) => void;
+  }
+}
+
 export default function Home({
   searchParams,
 }: {
@@ -58,7 +71,7 @@ export default function Home({
           query: searchParams.query,
           marketCode,
           clientIP: clientIP,
-          hostName: domainName
+          hostName: domainName,
         });
 
         if (searchParams.subid) {
@@ -82,14 +95,17 @@ export default function Home({
         const data = await response.json();
         const endTime = performance.now();
         const timeSpent = ((endTime - startTime) / 1000).toFixed(2);
-        console.log(`Page Load Time: ${timeSpent}s`);
+
         setSearchResults(data);
         setError(null);
+        setImpressions((prev) => prev + 1);
+        setClicks((prev) => prev + 1);
 
-        setImpressions((prevImpressions) => prevImpressions + 1);
-        setClicks((prevClicks) => prevClicks + 1);
         if (searchParams.subid) {
           await insertDataIntoSupabase(protocol, host, searchParams.subid, timeSpent);
+          if (typeof window !== 'undefined') {
+            loadAnuraScript(searchParams.subid, searchParams.t!, `${protocol}//${host}`);
+          }
         }
       } catch (err: any) {
         console.error('Search error:', err);
@@ -103,11 +119,14 @@ export default function Home({
     fetchResults();
   }, [searchParams.query, searchParams.subid, searchParams.t, marketCode, clientIP]);
 
-  // Function to insert data into Supabase
-  const insertDataIntoSupabase = async (protocol: string, host: string, subid: string, timeSpent: string) => {
+  const insertDataIntoSupabase = async (
+    protocol: string,
+    host: string,
+    subid: string,
+    timeSpent: string
+  ) => {
     try {
-      // Calculate CTR (Clicks / Impressions)
-      const ctr = impressions > 0 ? (clicks / impressions) : 0;
+      const ctr = impressions > 0 ? clicks / impressions : 0;
       const response = await fetch(`${protocol}//${host}/api/report`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -133,6 +152,57 @@ export default function Home({
     }
   };
 
+  const loadAnuraScript = (subid: string, typetag: string, baseUrl: string) => {
+    const callbackName = 'handleAnuraResponse';
+
+    window[callbackName] = async (response: any) => {
+      try {
+        const data = typeof response?.getResult === 'function' ? response.getResult() : response;
+        console.log('Anura response data:', response);
+        console.log('getId:', response.getId());
+        console.log('getMobile:', response.getResult());
+        console.log('isbad:', response.isBad());
+        console.log('getError:', response.getError());
+        console.log('isWarning:', response.isWarning());
+        
+        // const res = await fetch(`${baseUrl}/api/anura-score`, {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   body: JSON.stringify({
+        //     subid,
+        //     score: data?.score,
+        //     riskLevel: data?.riskLevel,
+        //     fullPayload: data,
+        //     timestamp: new Date().toISOString(),
+        //   }),
+        // });
+
+        // const result = await res.json();
+        // console.log('Anura score saved:', result);
+      } catch (err) {
+        console.error('Error handling Anura response:', err);
+      }
+    };
+
+    const script = document.createElement('script');
+    const request = {
+      instance: 2685694301,
+      source: subid,
+      campaign: typetag,
+      callback: callbackName,
+    };
+
+    const params: string[] = [];
+    for (const key in request) {
+      params.push(`${key}=${encodeURIComponent((request as any)[key])}`);
+    }
+
+    script.type = 'text/javascript';
+    script.async = true;
+    script.src = `https://script.anura.io/request.js?${params.join('&')}`;
+    document.head.appendChild(script);
+  };
+
   const handleIpAndMarketCodeReceived = (ip: string, code: string) => {
     console.log('Received IP:', ip, 'Market Code:', code);
     setClientIP(ip);
@@ -142,7 +212,6 @@ export default function Home({
   if (!searchParams.query) {
     return (
       <div className='px-4 md:px-6 lg:px-32 pt-4 pb-12'>
-        {/* <p className='font-black text-3xl'>Search ads!</p> */}
         <ClientIP onIpAndMarketCodeReceived={handleIpAndMarketCodeReceived} />
       </div>
     );
