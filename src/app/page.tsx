@@ -103,9 +103,6 @@ export default function Home({
 
         if (searchParams.subid) {
           await insertDataIntoSupabase(protocol, host, searchParams.subid, timeSpent);
-          if (typeof window !== 'undefined') {
-            loadAnuraScript(searchParams.subid, searchParams.t!, `${protocol}//${host}`);
-          }
         }
       } catch (err: any) {
         console.error('Search error:', err);
@@ -150,57 +147,6 @@ export default function Home({
     } catch (error) {
       console.error('Error inserting data into Supabase:', error);
     }
-  };
-
-  const loadAnuraScript = (subid: string, typetag: string, baseUrl: string) => {
-    const callbackName = 'handleAnuraResponse';
-
-    window[callbackName] = async (response: any) => {
-      try {
-        const data = typeof response?.getResult === 'function' ? response.getResult() : response;
-        console.log('Anura response data:', response);
-        console.log('getId:', response.getId());
-        console.log('getMobile:', response.getResult());
-        console.log('isbad:', response.isBad());
-        console.log('getError:', response.getError());
-        console.log('isWarning:', response.isWarning());
-        
-        // const res = await fetch(`${baseUrl}/api/anura-score`, {
-        //   method: 'POST',
-        //   headers: { 'Content-Type': 'application/json' },
-        //   body: JSON.stringify({
-        //     subid,
-        //     score: data?.score,
-        //     riskLevel: data?.riskLevel,
-        //     fullPayload: data,
-        //     timestamp: new Date().toISOString(),
-        //   }),
-        // });
-
-        // const result = await res.json();
-        // console.log('Anura score saved:', result);
-      } catch (err) {
-        console.error('Error handling Anura response:', err);
-      }
-    };
-
-    const script = document.createElement('script');
-    const request = {
-      instance: 2685694301,
-      source: subid,
-      campaign: typetag,
-      callback: callbackName,
-    };
-
-    const params: string[] = [];
-    for (const key in request) {
-      params.push(`${key}=${encodeURIComponent((request as any)[key])}`);
-    }
-
-    script.type = 'text/javascript';
-    script.async = true;
-    script.src = `https://script.anura.io/request.js?${params.join('&')}`;
-    document.head.appendChild(script);
   };
 
   const handleIpAndMarketCodeReceived = (ip: string, code: string) => {

@@ -6,9 +6,8 @@ import Image from "next/image";
 import { Table, DatePicker, Input, Space, Button } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { ColumnType } from "antd/es/table";
-
-// Extend dayjs with the isBetween plugin for date filtering
 import isBetween from "dayjs/plugin/isBetween";
+
 dayjs.extend(isBetween);
 
 const { RangePicker } = DatePicker;
@@ -26,12 +25,17 @@ interface ReportData {
 export default function Analytics() {
   const [domainName, setDomainName] = useState<string>("");
   const [data, setData] = useState<ReportData[]>([]);
+  const [anuraData, setAnuraData] = useState<ReportData[]>([]);
   const [apiUrl, setApiUrl] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [dateRange, setDateRange] = useState<[dayjs.Dayjs | null, dayjs.Dayjs | null]>([null, null]);
   const [searchText, setSearchText] = useState<string>("");
-  const [filteredData, setFilteredData] = useState<ReportData[]>(data);
+  const [filteredData, setFilteredData] = useState<ReportData[]>([]);
+  const [filteredAnuraData, setFilteredAnuraData] = useState<ReportData[]>([]);
+  const [anuraHeaders, setAnuraHeaders] = useState<string[]>([]);
+  const [anuraRows, setAnuraRows] = useState<any[][]>([]);
+  const [loadingAnura, setLoadingAnura] = useState(false);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 5,
@@ -56,7 +60,7 @@ export default function Analytics() {
         }
         const reports = await response.json();
         setData(reports);
-        setFilteredData(reports); // Initial filtered data will be the same as fetched data
+        setFilteredData(reports);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -67,9 +71,34 @@ export default function Analytics() {
     fetchData();
   }, [apiUrl]);
 
-  // Filter data by date range and search text
-  const filterData = () => {
-    return data.filter((item) => {
+  useEffect(() => {
+    if (!apiUrl || !dateRange[0] || !dateRange[1]) return;
+
+    const fetchAnuraData = async () => {
+      try {
+        const start = dateRange[0]?.format("YYYYMMDD");
+        const end = dateRange[1]?.format("YYYYMMDD");
+
+        const response = await fetch(`${window.location.protocol}//${window.location.host}/api/anura?start=${start}&end=${end}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch Anura report data");
+        }
+        const data = await response.json();
+        if (data?.table?.headers && data?.table.rows) {
+          setAnuraHeaders(data.table.headers);
+          setAnuraRows(data.table.rows);
+        }
+      } catch (err: any) {
+        console.error("Anura Fetch Error:", err);
+      }
+    };
+
+    fetchAnuraData();
+  }, [apiUrl, dateRange]);
+
+
+  const filterData = (source: ReportData[]) => {
+    return source.filter((item) => {
       const matchesSearchText =
         item.subid.toLowerCase().includes(searchText.toLowerCase()) ||
         dayjs(item.created_at).format("YYYY.MM.DD HH:mm").includes(searchText);
@@ -83,10 +112,10 @@ export default function Analytics() {
   };
 
   useEffect(() => {
-    setFilteredData(filterData()); // Update filtered data when search or date range changes
-  }, [searchText, dateRange, data]);
+    setFilteredData(filterData(data));
+    setFilteredAnuraData(filterData(anuraData));
+  }, [searchText, dateRange, data, anuraData]);
 
-  // Filter column search implementation
   const getColumnSearchProps = (dataIndex: keyof ReportData): ColumnType<ReportData> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
       <div className="p-4">
@@ -120,6 +149,7 @@ export default function Analytics() {
     onFilter: (value, record) =>
       record[dataIndex]?.toString().toLowerCase().includes((value as string).toLowerCase()),
   });
+
   const columns: ColumnType<ReportData>[] = [
     { title: "Sub ID", dataIndex: "subid", key: "subid", width: 150, ...getColumnSearchProps("subid") },
     { title: "Name", dataIndex: "name", key: "name", width: 150, ...getColumnSearchProps("name") },
@@ -130,7 +160,6 @@ export default function Analytics() {
   const expandedRowRender = (record: ReportData) => {
     const filteredRecords = data.filter((item) => item.subid === record.subid);
 
-    // Group records by created_at (date)
     const groupedByDate = filteredRecords.reduce((groups: any, item: any) => {
       const date = dayjs(item.created_at).format("YYYY-MM-DD");
       if (!groups[date]) {
@@ -218,53 +247,52 @@ export default function Analytics() {
                 columns={columns}
                 dataSource={filteredData}
                 rowKey={(record) => `${record.subid}-${record.created_at}`}
-                expandable={{
-                  expandedRowRender,
-                  rowExpandable: (record) => true,
-                }}
-                pagination={{
-                  ...pagination,
-                  onChange: handlePaginationChange,
-                }}
+                expandable={{ expandedRowRender, rowExpandable: () => true }}
+                pagination={{ ...pagination, onChange: handlePaginationChange }}
                 loading={loading}
                 rowClassName="hover:bg-gray-100"
-                scroll={{ x: "max-content" }} // Make the table horizontally scrollable
+                scroll={{ x: "max-content" }}
               />
-            </div><div className="mb-6 w-full">
+            </div>
+
+            <div className="mb-6 w-full">
               <h2 className="text-2xl font-semibold text-green-400 mb-4">Click Through Rate (CTR) Data</h2>
               <Table
                 columns={columns}
                 dataSource={filteredData}
                 rowKey={(record) => `${record.subid}-${record.created_at}`}
-                expandable={{
-                  expandedRowRender,
-                  rowExpandable: (record) => true,
-                }}
-                pagination={{
-                  ...pagination,
-                  onChange: handlePaginationChange,
-                }}
+                expandable={{ expandedRowRender, rowExpandable: () => true }}
+                pagination={{ ...pagination, onChange: handlePaginationChange }}
                 loading={loading}
                 rowClassName="hover:bg-gray-100"
-                scroll={{ x: "max-content" }} />
-            </div><div className="w-full">
-              <h2 className="text-2xl font-semibold text-red-400 mb-4">Anura Fraud Score Data</h2>
-              <Table
-                columns={columns}
-                dataSource={filteredData}
-                rowKey={(record) => `${record.subid}-${record.created_at}`}
-                expandable={{
-                  expandedRowRender,
-                  rowExpandable: (record) => true,
-                }}
-                pagination={{
-                  ...pagination,
-                  onChange: handlePaginationChange,
-                }}
-                loading={loading}
-                rowClassName="hover:bg-gray-100"
-                scroll={{ x: "max-content" }} />
+                scroll={{ x: "max-content" }}
+              />
             </div>
+
+            <div className="w-full">
+              <h2 className="text-2xl font-semibold text-red-400 mb-4">Anura Score Data</h2>
+              <Table
+                columns={anuraHeaders.map((header) => ({
+                  title: header.replace(/\+/g, " "),
+                  dataIndex: header,
+                  key: header,
+                  render: (text: any) => (typeof text === "number" ? text.toLocaleString() : text),
+                }))}
+                dataSource={anuraRows.map((row, index) => {
+                  const rowData: Record<string, any> = {};
+                  anuraHeaders.forEach((header, i) => {
+                    rowData[header] = row[i];
+                  });
+                  rowData.key = index;
+                  return rowData;
+                })}
+                loading={loadingAnura}
+                pagination={false}
+                scroll={{ x: "max-content" }}
+                rowClassName="hover:bg-gray-100"
+              />
+            </div>
+
           </>
         )}
       </div>
