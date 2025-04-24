@@ -79,6 +79,13 @@ export default function Analytics() {
         const start = dateRange[0]?.format("YYYYMMDD");
         const end = dateRange[1]?.format("YYYYMMDD");
 
+        const diffDays = dayjs(end).diff(dayjs(start), "days");
+
+        if (diffDays > 7) {
+          alert("Please select a date range of 7 days or less.");
+          return;
+        }
+
         const response = await fetch(`${window.location.protocol}//${window.location.host}/api/anura?start=${start}&end=${end}`);
         if (!response.ok) {
           throw new Error("Failed to fetch Anura report data");
@@ -208,8 +215,8 @@ export default function Analytics() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-[#020024] via-[#0d0d3d] to-[#00d4ff] relative">
-      <Image src="/curved-wings.png" alt="Left Wing" className="w-1/4 fixed bottom-16 left-0 hidden lg:block" width={320} height={320} priority />
-      <div className="min-h-screen w-4/5 lg:w-2/5 pt-8 pb-20 sm:pb-12 mx-auto flex flex-col items-end">
+      <Image src="/curved-wings.png" alt="Left Wing" className="w-1/5 fixed bottom-16 left-0 hidden lg:block z-0" width={220} height={220} priority />
+      <div className="relative z-10 min-h-screen w-4/5 lg:w-3/5 pt-8 pb-20 sm:pb-12 mx-auto flex flex-col items-end">
         <a href="/" className="block text-lg font-bold text-white mb-10">{domainName}</a>
 
         {!loading && (
@@ -299,9 +306,9 @@ export default function Analytics() {
       <Image
         src="/curved-wings.png"
         alt="Right Wing"
-        className="w-1/4 fixed bottom-16 right-0 transform scale-x-[-1] hidden lg:block"
-        width={320}
-        height={320}
+        className="w-1/5 fixed bottom-16 right-0 transform scale-x-[-1] hidden lg:block z-0"
+        width={220}
+        height={220}
         priority
       />
     </div>
