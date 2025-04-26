@@ -71,7 +71,7 @@ export default function Landing({ searchParams }: any) {
           <p className="text-gray-200 mt-10">Searches</p>
         )}
         {params.length > 0 ? (
-          <RedirectButtonList searchParams={params} cid={cid} clickid={clickid} />
+          <RedirectButtonList searchParams={params} cid={cid} clickid={clickid} subid={subid} />
         ) : (
           <p className="text-gray-200 text-center mt-10">No searches</p>
         )}

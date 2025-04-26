@@ -7,11 +7,13 @@ export default function RedirectButton({
   isFirst = false,
   cid,
   clickid,
+  subid,
 }: {
   text: string;
   isFirst?: boolean;
   cid: string;
   clickid: string;
+  subid: string;
 }) {
   const router = useRouter();
 
@@ -27,11 +29,11 @@ export default function RedirectButton({
 
   const handleClick = () => {
     // Format the keyword with underscores and prefix it
-    const formattedKeyword = text.replace(/\s+/g, "_");
-    const subid = `${formattedKeyword}${getDeviceSuffix()}`;
+    const formattedKeyword = subid.replace(/\s+/g, "_");
+    const subidValue = `${formattedKeyword}${getDeviceSuffix()}`;
 
     // Construct URL with all parameters
-    const url = `/?query=${encodeURIComponent(text)}${cid ? `&cid=${encodeURIComponent(cid)}` : ''}${clickid ? `&clickid=${encodeURIComponent(clickid)}` : ''}${subid ? `&subid=${encodeURIComponent(subid)}` : ''}&t=n2s3c`;
+    const url = `/?query=${encodeURIComponent(text)}${cid ? `&cid=${encodeURIComponent(cid)}` : ''}${clickid ? `&clickid=${encodeURIComponent(clickid)}` : ''}${subidValue ? `&subid=${encodeURIComponent(subidValue)}` : ''}&t=n2s3c`;
     
     router.push(url);
   };
