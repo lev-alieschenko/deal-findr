@@ -75,8 +75,10 @@ export const getAccessToken = async (jwt: string): Promise<string> => {
   }
 };
 
+// Prevent flooding with rapid requests
 let lastRequestTime = 0;
-const minInterval = 500;
+const minInterval = 500; // 500ms between requests
+const MAX_RETRIES = 2; // Retry limit for transient failures (e.g., 408)
 
 export const searchRequest = async (
   accessToken: string,
@@ -88,71 +90,89 @@ export const searchRequest = async (
   marketCode: string = "en-US",
   adSourceTag: string = 'brandclick_s2s_sapip_3161_goog_dealfindr2'
 ): Promise<any> => {
-  const currentTime = Date.now();
-  const timeSinceLastRequest = currentTime - lastRequestTime;
-
-  if (timeSinceLastRequest < minInterval) {
-    await new Promise((resolve) =>
-      setTimeout(resolve, minInterval - timeSinceLastRequest)
-    );
-  }
-
-  lastRequestTime = Date.now();
-  const searchUrl = new URL('https://api.search.yahoo.com/sdata/v3/search');
-
-  const searchParams = {
-    appid: CONFIG.searchAppId,
-    query: query,
-    market: marketCode,
-    uIP: clientIP,
-    serveUrl: CONFIG.serveUrl,
-    features: 'ads.pla,ads,ads.north,ads.east',
-    adSourceTag,
-    adType: subid || 'textpla',
-    'ads-review': '1',
-    'ads-sitelink': '1',
-    'ads-merchantRating': '1',
-    'ads-callout': '1',
-    'ads-action': '1',
-    'ads-longAdTitle': '1',
-    'ads-fourthLine': '1',
-    'ads.north-count': '10',
-    'ads.east-count': '10',
-    'ads-image': '1',
-    'ads-favicon': '1',
-    'ads.pla-eliteBadge': '1',
-    'ads.pla-priceDrop': '1',
-    'ads-page': page.toString(),
-  };
-
-  Object.entries(searchParams).forEach(([key, value]) => {
-    searchUrl.searchParams.append(key, value);
-  });
-  try {
-    const response = await fetch(searchUrl.toString(), {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'User-Agent': userAgent,
-        'Cache-Control': 'no-cache',
-        Pragma: 'no-cache',
-        Connection: 'keep-alive',
-      },
-      redirect: "follow"
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => null);
-      throw new Error(
-        errorData?.error?.message || `HTTP error! status: ${response.status}`
+  const delayIfNeeded = async () => {
+    const currentTime = Date.now();
+    const timeSinceLastRequest = currentTime - lastRequestTime;
+    if (timeSinceLastRequest < minInterval) {
+      await new Promise((resolve) =>
+        setTimeout(resolve, minInterval - timeSinceLastRequest)
       );
     }
+    lastRequestTime = Date.now();
+  };
 
-    return response.json();
-  } catch (error: any) {
-    console.error('Search request failed:', error);
-    throw new Error(error.message || 'Search request failed');
-  }
+  const buildSearchUrl = (): string => {
+    const searchUrl = new URL('https://api.search.yahoo.com/sdata/v3/search');
+    const searchParams = {
+      appid: CONFIG.searchAppId,
+      query: query,
+      market: marketCode,
+      uIP: clientIP,
+      serveUrl: CONFIG.serveUrl,
+      features: 'ads.pla,ads,ads.north,ads.east',
+      adSourceTag,
+      adType: subid || 'textpla',
+      'ads-review': '1',
+      'ads-sitelink': '1',
+      'ads-merchantRating': '1',
+      'ads-callout': '1',
+      'ads-action': '1',
+      'ads-longAdTitle': '1',
+      'ads-fourthLine': '1',
+      'ads.north-count': '10',
+      'ads.east-count': '10',
+      'ads-image': '1',
+      'ads-favicon': '1',
+      'ads.pla-eliteBadge': '1',
+      'ads.pla-priceDrop': '1',
+      'ads-page': page.toString(),
+    };
+    Object.entries(searchParams).forEach(([key, value]) => {
+      searchUrl.searchParams.append(key, value);
+    });
+    return searchUrl.toString();
+  };
+
+  const attemptSearch = async (retry: number = 0): Promise<any> => {
+    await delayIfNeeded();
+    const url = buildSearchUrl();
+    console.log('Search URL:', url);
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'User-Agent': userAgent,
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache',
+          Connection: 'keep-alive',
+        },
+        redirect: "follow"
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        const errorMsg =
+          errorData?.error?.message || `HTTP error! status: ${response.status}`;
+
+        if (response.status === 408 && retry < MAX_RETRIES) {
+          console.warn(`Retrying (${retry + 1}) due to 408 Timeout...`);
+          await new Promise(res => setTimeout(res, 1000)); // wait 1 second before retry
+          return attemptSearch(retry + 1);
+        }
+
+        throw new Error(errorMsg);
+      }
+
+      return await response.json();
+    } catch (error: any) {
+      console.error('Search request failed:', error);
+      throw new Error(error.message || 'Search request failed');
+    }
+  };
+
+  return attemptSearch();
 };

@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
         marketCode,
         adSourceTag
       ),
-      5000 // timeout in ms
+      5000 // timeout in milliseconds
     );
 
     const duration = Date.now() - start;
