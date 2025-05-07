@@ -50,6 +50,14 @@ export default function Home({
   const [impressions, setImpressions] = useState(0);
 
   useEffect(() => {
+    const canFetch =
+      Boolean(searchParams.query) &&
+      Boolean(searchParams.subid || true) &&
+      Boolean(searchParams.t || true) &&
+      marketCode &&
+      clientIP;
+
+    if (!canFetch) return;
     const fetchResults = async () => {
       if (!searchParams.query || !marketCode || !clientIP) {
         console.log('Missing query, market code, or IP:', {
@@ -166,10 +174,15 @@ export default function Home({
   return (
     <main className='px-4 md:px-6 lg:px-32 pt-4 pb-12'>
       <ClientIP onIpAndMarketCodeReceived={handleIpAndMarketCodeReceived} />
-      {isLoading ? (
+      {/* {isLoading ? (
         <SearchResultsLoading />
       ) : error ? (
         <ErrorDisplay error={error} />
+      ) : (
+        searchResults && <SearchResults results={searchResults} />
+      )} */}
+      {isLoading ? (
+        <SearchResultsLoading />
       ) : (
         searchResults && <SearchResults results={searchResults} />
       )}
