@@ -109,9 +109,9 @@ export default function Home({
         setImpressions((prev) => prev + 1);
         setClicks((prev) => prev + 1);
 
-        if (searchParams.subid) {
-          await insertDataIntoSupabase(protocol, host, searchParams.subid, timeSpent);
-        }
+        // if (searchParams.subid) {
+        //   await insertDataIntoSupabase(protocol, host, searchParams.subid, timeSpent);
+        // }
       } catch (err: any) {
         console.error('Search error:', err);
         setError(err);
