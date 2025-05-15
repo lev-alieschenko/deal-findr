@@ -6,7 +6,7 @@ import {
 } from '@/shared/utils/search-api';
 import { NextRequest } from 'next/server';
 
-// export const runtime = 'edge';
+export const runtime = 'edge';
 
 let cachedToken: { value: string; expiresAt: number } | null = null;
 
