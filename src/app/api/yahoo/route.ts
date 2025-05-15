@@ -90,10 +90,8 @@ export async function GET(request: NextRequest) {
         );
         console.log(`Search executed in ${Date.now() - searchStart}ms`);
         const forwarded = request.headers.get('x-forwarded-for');
-        const acceptLang = request.headers.get('accept-language');
         const ip = forwarded?.split(',')[0]?.trim() || request.ip || 'Unknown';
-        response.ip = ip;
-        response.marketCode = acceptLang;
+        response.ip = ip
         return response;
       })(),
       8000 // total timeout: 8 seconds
