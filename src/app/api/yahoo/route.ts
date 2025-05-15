@@ -60,6 +60,8 @@ export async function GET(request: NextRequest) {
     const t = searchParams.get('t');
     const hostName = searchParams.get('hostName');
     const subid = searchParams.get('subid');
+    // const clientIP = searchParams.get('clientIP');
+    // const marketCode = searchParams.get('marketCode');
     const clientIP = searchParams.get('clientIP');
     const marketCode = searchParams.get('marketCode');
 
@@ -90,10 +92,10 @@ export async function GET(request: NextRequest) {
         );
         console.log(`Search executed in ${Date.now() - searchStart}ms`);
         const forwarded = request.headers.get('x-forwarded-for');
-        const acceptLang = request.headers.get('accept-language');
+        const countryCode = request.headers.get('x-vercel-ip-country');
         const ip = forwarded?.split(',')[0]?.trim() || request.ip || 'Unknown';
         response.ip = ip;
-        response.marketCode = acceptLang;
+        response.marketCode = countryCode;
         return response;
       })(),
       8000 // total timeout: 8 seconds
