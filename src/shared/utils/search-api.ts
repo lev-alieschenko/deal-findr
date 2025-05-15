@@ -128,9 +128,9 @@ export const searchRequest = async (
   Object.entries(searchParams).forEach(([key, value]) => {
     searchUrl.searchParams.append(key, value);
   });
+
   try {
     const response = await fetch(searchUrl.toString(), {
-      method: "GET",
       headers: {
         Authorization: `Bearer ${accessToken}`,
         Accept: 'application/json',
@@ -138,9 +138,7 @@ export const searchRequest = async (
         'User-Agent': userAgent,
         'Cache-Control': 'no-cache',
         Pragma: 'no-cache',
-        Connection: 'keep-alive',
       },
-      redirect: "follow"
     });
 
     if (!response.ok) {
