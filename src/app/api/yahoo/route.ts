@@ -8,30 +8,6 @@ import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
-let cachedToken: { value: string; expiresAt: number } | null = null;
-
-async function getCachedAccessToken(): Promise<string> {
-  const now = Date.now();
-  if (cachedToken && cachedToken.expiresAt > now) {
-    return cachedToken.value;
-  }
-
-  const jwtStart = now;
-  const jwt = await generateJWT();
-  console.log(`JWT generated in ${Date.now() - jwtStart}ms`);
-
-  const tokenStart = Date.now();
-  const accessToken = await getAccessToken(jwt);
-  console.log(`Access token retrieved in ${Date.now() - tokenStart}ms`);
-
-  cachedToken = {
-    value: accessToken,
-    expiresAt: now + 5 * 60 * 1000, // 5 minutes cache
-  };
-
-  return accessToken;
-}
-
 function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => {
@@ -71,34 +47,28 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const result = await withTimeout(
-      (async () => {
-        const [accessToken, adSourceTag] = await Promise.all([
-          getCachedAccessToken(),
-          getAdSourceTag(t, hostName)
-        ]);
+    const jwt = await generateJWT();
+    const accessToken = await getAccessToken(jwt);
+    const adSourceTag = await getAdSourceTag(t, hostName);
 
-        const searchStart = Date.now();
-        const response = await searchRequest(
-          accessToken,
-          query,
-          userAgent,
-          subid || 'textpla',
-          1,
-          clientIP,
-          marketCode,
-          adSourceTag
-        );
-        console.log(`Search executed in ${Date.now() - searchStart}ms`);
-        return response;
-      })(),
-      8000 // total timeout: 8 seconds
+    const searchResults = await withTimeout(
+      searchRequest(
+        accessToken,
+        query,
+        userAgent,
+        subid || 'textpla',
+        1,
+        clientIP,
+        marketCode,
+        adSourceTag
+      ),
+      5000 // timeout in milliseconds
     );
 
     const duration = Date.now() - start;
     console.log(`Search completed in ${duration}ms`);
 
-    return new Response(JSON.stringify(result), {
+    return new Response(JSON.stringify(searchResults), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -106,7 +76,7 @@ export async function GET(request: NextRequest) {
     const duration = Date.now() - start;
     console.error(`Error after ${duration}ms:`, error.message);
     return new Response(JSON.stringify({ error: error.message }), {
-      status: error.message?.includes("timed out") ? 408 : 500,
+      status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
   }
