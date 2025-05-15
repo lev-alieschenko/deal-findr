@@ -52,6 +52,7 @@ function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
 
 export async function GET(request: NextRequest) {
   const start = Date.now();
+
   try {
     const userAgent = request.headers.get('user-agent') || '';
     const searchParams = request.nextUrl.searchParams;
@@ -89,9 +90,6 @@ export async function GET(request: NextRequest) {
           adSourceTag
         );
         console.log(`Search executed in ${Date.now() - searchStart}ms`);
-        const forwarded = request.headers.get('x-forwarded-for');
-        const ip = forwarded?.split(',')[0]?.trim() || request.ip || 'Unknown';
-        response.ip = ip
         return response;
       })(),
       8000 // total timeout: 8 seconds
