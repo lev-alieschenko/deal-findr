@@ -165,11 +165,20 @@ export default function Home({
 
   return (
     <main className='px-4 md:px-6 lg:px-32 pt-4 pb-12'>
-      <ClientIP onIpAndMarketCodeReceived={handleIpAndMarketCodeReceived} />
+      {/* <ClientIP onIpAndMarketCodeReceived={handleIpAndMarketCodeReceived} />
+        {isLoading ? (
+          <SearchResultsLoading />
+        ) : error ? (
+          <ErrorDisplay error={error} />
+        ) : (
+          searchResults && <SearchResults results={searchResults} />
+        )} */}
+      {!clientIP || !marketCode ? (
+        <ClientIP onIpAndMarketCodeReceived={handleIpAndMarketCodeReceived} />
+      ) : null}
+
       {isLoading ? (
         <SearchResultsLoading />
-      ) : error ? (
-        <ErrorDisplay error={error} />
       ) : (
         searchResults && <SearchResults results={searchResults} />
       )}
