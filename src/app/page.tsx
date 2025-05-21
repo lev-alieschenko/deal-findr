@@ -102,7 +102,7 @@ export default function Home({
         setClicks((prev) => prev + 1);
 
         if (searchParams.subid) {
-          await insertDataIntoSupabase(protocol, host, searchParams.subid, timeSpent);
+          // await insertDataIntoSupabase(protocol, host, searchParams.subid, timeSpent);
         }
       } catch (err: any) {
         console.error('Search error:', err);

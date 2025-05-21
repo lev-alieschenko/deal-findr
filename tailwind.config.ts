@@ -16,7 +16,10 @@ module.exports = withMT({
       colors: {
         "dark-blue": "#1A0DAB",
         "dark-orange": "#D43900"
-      }
+      },
+      fontFamily: {
+        roboto: ['var(--font-roboto)', 'sans-serif'],
+      },
     },
   },
   plugins: [],

@@ -2,8 +2,10 @@
 
 import { getPParams } from "@/components/common/getPParams";
 import RedirectButtonList from "@/components/RedirectButtons/RedirectButtonList";
-import Image from "next/image";
 import { useEffect, useState } from "react";
+import { Input } from "@material-tailwind/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 export const runtime = 'edge';
 
@@ -52,38 +54,53 @@ export default function Landing({ searchParams }: any) {
     )
   }
 
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-[#020024] via-[#0d0d3d] to-[#00d4ff] relative">
-      <Image
-        src="/curved-wings.png"
-        alt="Left Wing"
-        className="w-1/4 fixed bottom-16 left-0 hidden lg:block"
-        width={320}
-        height={320}
-        priority
-      />
-      <div className="min-h-screen w-4/5 lg:w-2/5 pt-8 pb-20 sm:pb-12 mx-auto flex flex-col items-end">
-        <a href="/" className="block text-lg sm:text-lg md:text-lg font-bold text-white">
-          <span>{domainName}</span>
-        </a>
+    <div className="w-full pt-4 bg-[#E6F3FF]">
+      <div className="min-h-screen w-4/5 lg:w-2/5 pt-3 pb-20 sm:pb-12 mx-auto flex flex-col items-start">
+        <form className="w-full">
+          <div className="shadow-md">
+            <Input
+              size="lg"
+              label="Search"
+              icon={
+                <FontAwesomeIcon
+                  className="cursor-pointer hover:text-blue-500 transition-colors"
+                  icon={faSearch}
+                />
+              }
+              className="w-full bg-white"
+              crossOrigin={undefined}
+              onPointerEnterCapture={undefined}
+              onPointerLeaveCapture={undefined}
+            />
+          </div>
+        </form>
         {params.length > 0 && (
-          <p className="text-gray-200 mt-10">Searches</p>
+          <>
+            <p className="mt-5 text-xs sm:text-sm md:text-base text-gray-600 inline-block overflow-hidden whitespace-nowrap">Search for</p>
+          </>
         )}
+
         {params.length > 0 ? (
-          <RedirectButtonList searchParams={params} cid={cid} clickid={clickid} subid={subid} />
+          <>
+            <RedirectButtonList searchParams={params} cid={cid} clickid={clickid} subid={subid} />
+            <div className="w-full flex justify-center my-1 md:my-0">
+              <a
+                href="/"
+                className="text-xl font-bold text-gray-800 tracking-wide whitespace-nowrap"
+              >
+                <span className="truncate max-w-full text-center">
+                  {domainName}
+                </span>
+              </a>
+            </div>
+
+          </>
         ) : (
-          <p className="text-gray-200 text-center mt-10">No searches</p>
+          <p className="text-gray-400 mt-10 text-left">No searches</p>
         )}
       </div>
-      <Image
-        src="/curved-wings.png"
-        alt="Right Wing"
-        className="w-1/4 fixed bottom-16 right-0 transform scale-x-[-1] hidden lg:block"
-        width={320}
-        height={320}
-        priority
-      />
+
     </div>
   );
 }

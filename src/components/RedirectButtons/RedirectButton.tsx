@@ -1,6 +1,6 @@
 import React from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
+import { ChevronRightIcon } from '@heroicons/react/24/solid';
 
 export default function RedirectButton({
   text,
@@ -30,12 +30,12 @@ export default function RedirectButton({
   const handleClick = () => {
     // Format the keyword with underscores and prefix it
     const formattedSubid = subid.replace(/\s+/g, "_");
-    const formattedKeyword = text.replace(/\s+/g, "_"); 
+    const formattedKeyword = text.replace(/\s+/g, "_");
     const subidValue = `${formattedSubid}_${formattedKeyword}${getDeviceSuffix()}`;
 
     // Construct URL with all parameters
     const url = `/?query=${encodeURIComponent(text)}${cid ? `&cid=${encodeURIComponent(cid)}` : ''}${clickid ? `&clickid=${encodeURIComponent(clickid)}` : ''}${subidValue ? `&subid=${encodeURIComponent(subidValue)}` : ''}&t=n2s3c`;
-    
+
     router.push(url);
   };
 
@@ -43,16 +43,10 @@ export default function RedirectButton({
     <div className={'w-full flex justify-center items-center my-4'}>
       <button
         onClick={handleClick}
-        className="w-full h-fit sm:h-28 md:h-32 px-4 py-8 text-2xl underline font-bold text-left text-black bg-white border-2 border-cyan-500 rounded-lg shadow-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 flex justify-between items-center"
+        className='w-full h-10 sm:h-14 md:h-16 px-4 py-4 text-base sm:text-lg md:text-xl font-bold text-left text-gray-800 bg-white rounded-lg shadow-md flex justify-between items-center'
       >
         <span>{text}</span>
-        <Image
-          className="object-cover"
-          src="/next-page.png"
-          alt="Next page"
-          width={18}
-          height={18}
-        />
+        <ChevronRightIcon className="w-5 h-5 text-gray-500" />
       </button>
     </div>
   );

@@ -1,7 +1,7 @@
 "use client"
 import React, { Suspense, useEffect, useState } from 'react';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Roboto } from 'next/font/google';
 import Script from 'next/script';
 
 import { Header } from '@/components/Header/Header';
@@ -11,7 +11,12 @@ import { Footer } from '@/components/Footer/Footer';
 import './globals.css';
 import MetaPixelProvider from '@/components/MetaProvider/MetaProvider';
 
-const inter = Inter({ subsets: ['latin'] });
+const roboto = Roboto({
+  subsets: ['latin'],
+  weight: ['400', '500', '700'],
+  variable: '--font-roboto',
+  display: 'swap',
+});
 
 const GTM_ID = "GTM-T3MQNZ4Q";
 
@@ -50,7 +55,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.className} min-h-screen relative flex flex-col`}>
+      <body className={`${roboto.className} min-h-screen relative flex flex-col`}>
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe
