@@ -93,8 +93,8 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ results }) => {
   }
 
   return (
-    <div className='w-full px-4 md:px-0'>
-      <div className="pl-5 sm:pl-0">
+    <div className='w-full'>
+      <div className="pl-1 sm:pl-0">
         <span className="text-xs sm:text-sm md:text-base text-gray-600 inline-block overflow-hidden whitespace-nowrap">
           {isLoading ? (
             "Loading..."

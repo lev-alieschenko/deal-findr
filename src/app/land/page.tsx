@@ -57,24 +57,6 @@ export default function Landing({ searchParams }: any) {
   return (
     <div className="w-full pt-4 bg-[#E6F3FF]">
       <div className="min-h-screen w-4/5 lg:w-2/5 pt-3 pb-20 sm:pb-12 mx-auto flex flex-col items-start">
-        <form className="w-full">
-          <div className="shadow-md">
-            <Input
-              size="lg"
-              label="Search"
-              icon={
-                <FontAwesomeIcon
-                  className="cursor-pointer hover:text-blue-500 transition-colors"
-                  icon={faSearch}
-                />
-              }
-              className="w-full bg-white"
-              crossOrigin={undefined}
-              onPointerEnterCapture={undefined}
-              onPointerLeaveCapture={undefined}
-            />
-          </div>
-        </form>
         {params.length > 0 && (
           <>
             <p className="mt-5 text-xs sm:text-sm md:text-base text-gray-600 inline-block overflow-hidden whitespace-nowrap">Search for</p>
@@ -89,7 +71,7 @@ export default function Landing({ searchParams }: any) {
                 href="/"
                 className="text-xl font-bold text-gray-800 tracking-wide whitespace-nowrap"
               >
-                <span className="truncate max-w-full text-center">
+                <span className="truncate max-w-full text-center text-sm md:text-xl">
                   {domainName}
                 </span>
               </a>
