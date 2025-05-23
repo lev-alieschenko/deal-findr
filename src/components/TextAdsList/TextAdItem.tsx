@@ -152,7 +152,7 @@ export const TextAdItem: React.FC<TextAdItemProps> = ({
           {displayUrl && <span>{displayUrl}</span>}
         </div>
       </div>
-      <h2>
+      <h2 className="my-2 md:my-0">
         <a
           className="text-xl text-dark-blue hover:text-dark-orange hover:underline"
           href={url}
