@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const runtime = 'edge';
 
 // specialReferrers
-const specialReferrers = ["yarb.net"];
+const specialReferrers = ["yarb.net", "Favoritepicks.net", "fewgoodpicks.net", "onlygoodresults.com", "shopfavorites.net", "shoppingresults.net", "bettersearchstuff.com"];
 const destination = "https://deal-findr.com";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
