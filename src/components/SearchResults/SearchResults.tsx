@@ -33,9 +33,21 @@ export interface SearchResultsProps {
                 numRating: number;
               };
             }>;
+            instrumentation: {
+              ClientID: string;
+              ImpressionGUID: string;
+              SearchID: string;
+              rguid: string;
+            };
           };
           'ads.east'?: {
             data: any[];
+            instrumentation: {
+              ClientID: string;
+              ImpressionGUID: string;
+              SearchID: string;
+              rguid: string;
+            };
           };
           'ads.pla'?: {
             data: Array<{
@@ -49,10 +61,17 @@ export interface SearchResultsProps {
                 rating: number;
               };
             }>;
+            instrumentation: {
+              ClientID: string;
+              ImpressionGUID: string;
+              SearchID: string;
+              rguid: string;
+            };
           };
         };
       };
-    };
+    },
+    adSourceTag?: string;
   };
 }
 
@@ -82,11 +101,29 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ results }) => {
   const allAds = transformAdsData();
   const totalPages = Math.max(Math.ceil(allAds.length / TEXT_ADS_PER_PAGE), 1);
   const plaData = results.response?.search?.results?.['ads.pla'];
+  const searchID =
+    results.response?.search?.results?.['ads.north']?.instrumentation?.SearchID ??
+    results.response?.search?.results?.['ads.east']?.instrumentation?.SearchID ??
+    results.response?.search?.results?.['ads.pla']?.instrumentation?.SearchID;
+
+  const trafficSource = results.adSourceTag;
 
   useEffect(() => {
     setCurrentPage(1);
     setTotalResults(allAds.length);
   }, [query, allAds.length]);
+
+  useEffect(() => {
+    if (searchID && trafficSource) {
+      const beacon = document.createElement('img');
+      beacon.src = `https://search.yahoo.com/beacon/geop/p?s=1197812282&ysid=${encodeURIComponent(searchID)}&traffic_source=${encodeURIComponent(trafficSource)}`;
+      beacon.width = 1;
+      beacon.height = 1;
+      beacon.style.display = 'none';
+      document.body.appendChild(beacon);
+    }
+  }, [searchID, trafficSource]);
+  
 
   if (!allAds.length) {
     return <p>No content</p>;

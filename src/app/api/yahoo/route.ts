@@ -58,6 +58,8 @@ export async function GET(request: NextRequest) {
       adSourceTag
     );
 
+    searchResults.adSourceTag = adSourceTag;
+
     return new Response(JSON.stringify(searchResults), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
