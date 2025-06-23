@@ -15,7 +15,9 @@ export async function GET(request: NextRequest) {
 
     const query = searchParams.get('query');
     const t = searchParams.get('t');
-    const hostName = searchParams.get('hostName');
+    const hostName = searchParams.get('hostName') ||
+      request.headers.get('host') ||
+      'https://deal-findr.com';
     const subid = searchParams.get('subid');
     const clientIP = searchParams.get('clientIP');
     const marketCode = searchParams.get('marketCode');
@@ -55,7 +57,8 @@ export async function GET(request: NextRequest) {
       1,
       clientIP,
       marketCode,
-      adSourceTag
+      adSourceTag,
+      hostName
     );
 
     searchResults.adSourceTag = adSourceTag;
