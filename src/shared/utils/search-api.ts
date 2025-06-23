@@ -7,7 +7,7 @@ export const CONFIG = {
   path: '/identity/oauth2/access_token',
   realm: 'sagw',
   searchAppId: 'ad0ff316',
-  serveUrl: 'https://deal-findr.com',
+  // serveUrl: 'https://deal-findr.com',
 } as const;
 
 export const generateJWT = async (): Promise<string> => {
@@ -87,7 +87,7 @@ export const searchRequest = async (
   clientIP: string = '0.0.0.0',
   marketCode: string = "en-US",
   adSourceTag: string = 'brandclick_s2s_sapip_3161_goog_dealfindr2',
-  hostName: string = 'https://deal-findr.com',
+  serverUrl: string = 'https://deal-findr.com',
 ): Promise<any> => {
   const currentTime = Date.now();
   const timeSinceLastRequest = currentTime - lastRequestTime;
@@ -106,7 +106,7 @@ export const searchRequest = async (
     query: query,
     market: marketCode,
     uIP: clientIP,
-    serveUrl: hostName,
+    serveUrl: serverUrl,
     features: 'ads.pla,ads,ads.north,ads.east',
     adSourceTag,
     adType: subid || 'textpla',

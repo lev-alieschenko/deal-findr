@@ -15,9 +15,8 @@ export async function GET(request: NextRequest) {
 
     const query = searchParams.get('query');
     const t = searchParams.get('t');
-    const hostName = searchParams.get('hostName') ||
-      request.headers.get('host') ||
-      'https://deal-findr.com';
+    const hostName = searchParams.get('hostName');
+    const serverUrl = `${request.headers.get('x-forwarded-proto') || 'https'}://${request.headers.get('host')}`;
     const subid = searchParams.get('subid');
     const clientIP = searchParams.get('clientIP');
     const marketCode = searchParams.get('marketCode');
@@ -58,7 +57,7 @@ export async function GET(request: NextRequest) {
       clientIP,
       marketCode,
       adSourceTag,
-      hostName
+      serverUrl
     );
 
     searchResults.adSourceTag = adSourceTag;
