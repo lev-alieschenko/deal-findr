@@ -25,7 +25,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [siteTitle, setSiteTitle] = useState("Deal Findr");
+  const [siteTitle, setSiteTitle] = useState("Find your search!");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
