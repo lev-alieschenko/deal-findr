@@ -1,6 +1,6 @@
 "use client"
 import React, { Suspense, useEffect, useState } from 'react';
-import type { Metadata } from 'next';
+// import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 import Script from 'next/script';
 
@@ -10,6 +10,11 @@ import { Footer } from '@/components/Footer/Footer';
 
 import './globals.css';
 import MetaPixelProvider from '@/components/MetaProvider/MetaProvider';
+
+export const metadata = {
+  title: 'Find your search!',
+  description: 'Find the best deals on the web!',
+};
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -25,20 +30,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [siteTitle, setSiteTitle] = useState("Find your search!");
+  // const [siteTitle, setSiteTitle] = useState("Find your search!");
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const hostname = window.location.hostname.replace(/^www\./, '').split('.')[0].toUpperCase();
-      setSiteTitle(`${hostname}`);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     const hostname = window.location.hostname.replace(/^www\./, '').split('.')[0].toUpperCase();
+  //     setSiteTitle(`${hostname}`);
+  //   }
+  // }, []);
 
   return (
     <html lang='en' className='h-full'>
       <head>
-        <title>{siteTitle}</title>
-        <meta name="description" content="Find the best deals on the web!" />
+        {/* <title>{siteTitle}</title> */}
+        {/* <title>"Find your search!"</title>
+        <meta name="description" content="Find the best deals on the web!" /> */}
 
         {/* Google Tag Manager Script */}
         <Script
