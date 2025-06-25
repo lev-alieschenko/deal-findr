@@ -14,7 +14,7 @@ export const Header = () => {
   const pathname = usePathname();
   const [inputValue, setInputValue] = useState("");
   const { query, setQuery } = useAppContext();
-  const [domainName, setDomainName] = useState("Deal-Findr");
+  const [domainName, setDomainName] = useState("");
 
   useEffect(() => {
     if (typeof window !== "undefined") {

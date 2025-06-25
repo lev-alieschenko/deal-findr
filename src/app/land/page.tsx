@@ -14,7 +14,7 @@ export default function Landing({ searchParams }: any) {
   const cid = searchParams.cid;
   const clickid = searchParams.clickid;
   const subid = searchParams.subid;
-  const [domainName, setDomainName] = useState("Deal-Findr");
+  const [domainName, setDomainName] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
