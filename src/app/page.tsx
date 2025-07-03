@@ -21,6 +21,7 @@ interface SearchParams {
   query?: string;
   subid?: string;
   t?: string;
+  cid?: string;
 }
 
 interface AnuraResponse {
@@ -41,6 +42,8 @@ export default function Home({
 }: {
   searchParams: SearchParams;
 }) {
+  const cid = searchParams?.cid;
+  console.log(cid, "-----")
   const [clientIP, setClientIP] = useState('');
   const [marketCode, setMarketCode] = useState<string>('');
   const [searchResults, setSearchResults] = useState<any>(null);
@@ -180,7 +183,7 @@ export default function Home({
       {isLoading ? (
         <SearchResultsLoading />
       ) : (
-        searchResults && <SearchResults results={searchResults} />
+        searchResults && <SearchResults results={searchResults} cid={cid} />
       )}
     </main>
   );

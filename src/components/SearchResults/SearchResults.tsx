@@ -73,9 +73,10 @@ export interface SearchResultsProps {
     },
     adSourceTag?: string;
   };
+  cid?: string;
 }
 
-export const SearchResults: React.FC<SearchResultsProps> = ({ results }) => {
+export const SearchResults: React.FC<SearchResultsProps> = ({ results, cid }) => {
   const { query } = useAppContext();
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -106,6 +107,11 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ results }) => {
     results.response?.search?.results?.['ads.east']?.instrumentation?.SearchID ??
     results.response?.search?.results?.['ads.pla']?.instrumentation?.SearchID;
 
+  const rguid =
+    results.response?.search?.results?.['ads.north']?.instrumentation?.rguid ??
+    results.response?.search?.results?.['ads.east']?.instrumentation?.rguid ??
+    results.response?.search?.results?.['ads.pla']?.instrumentation?.rguid;
+
   const trafficSource = results.adSourceTag;
 
   useEffect(() => {
@@ -123,7 +129,47 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ results }) => {
       document.body.appendChild(beacon);
     }
   }, [searchID, trafficSource]);
-  
+
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.async = true;
+    script.defer = true;
+    script.text = `
+      (function(w, d, t, x, m, l, p) {
+        w['XMLPlusSTObject'] = m;
+        w[m] = w[m] || function() {
+          (w[m].q = w[m].q || []).push(arguments);
+        };
+        w[m].l = 1 * new Date();
+        l = d.createElement(t);
+        p = d.getElementsByTagName(t)[0];
+        l.type = "text/javascript";
+        l.async = 1;
+        l.defer = 1;
+        l.src = x;
+        p.parentNode.insertBefore(l, p);
+      })(
+        window,
+        document,
+        'script',
+        'https://s.yimg.com/ds/scripts/selectTier-v1.1.0.js',
+        'selectTier'
+      );
+      selectTier('init', {
+        source_tag: '${trafficSource || ''}',
+        ysid: '${searchID || ''}',
+        cid: '${cid || ''}',
+        ig: 'ig',
+        select_tier: {
+          clarityId: 'clarityId',
+          rguid: '${rguid || ''}'
+        },
+        test_mode: false
+      });
+    `;
+    document.body.appendChild(script);
+  }, [searchID, rguid, trafficSource]);
 
   if (!allAds.length) {
     return <p>No content</p>;
