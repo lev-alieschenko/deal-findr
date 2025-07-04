@@ -112,6 +112,16 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ results, cid }) =>
     results.response?.search?.results?.['ads.east']?.instrumentation?.rguid ??
     results.response?.search?.results?.['ads.pla']?.instrumentation?.rguid;
 
+  const clientID =
+    results.response?.search?.results?.['ads.north']?.instrumentation?.ClientID ??
+    results.response?.search?.results?.['ads.east']?.instrumentation?.ClientID ??
+    results.response?.search?.results?.['ads.pla']?.instrumentation?.ClientID;
+
+  const impressionGUID =
+    results.response?.search?.results?.['ads.north']?.instrumentation?.ImpressionGUID ??
+    results.response?.search?.results?.['ads.east']?.instrumentation?.ImpressionGUID ??
+    results.response?.search?.results?.['ads.pla']?.instrumentation?.ImpressionGUID;
+
   const trafficSource = results.adSourceTag;
 
   useEffect(() => {
@@ -159,8 +169,8 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ results, cid }) =>
       selectTier('init', {
         source_tag: '${trafficSource || ''}',
         ysid: '${searchID || ''}',
-        cid: '${cid || ''}',
-        ig: 'ig',
+        cid: '${clientID || ''}',
+        ig: '${impressionGUID || ''}',
         select_tier: {
           clarityId: 'clarityId',
           rguid: '${rguid || ''}'
