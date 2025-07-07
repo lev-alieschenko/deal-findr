@@ -43,8 +43,9 @@ export default function Home({
   searchParams: SearchParams;
 }) {
   const cid = searchParams?.cid;
-  console.log(cid, "-----")
+  
   const [clientIP, setClientIP] = useState('');
+  const [domainName, setDomainName] = useState('');
   const [marketCode, setMarketCode] = useState<string>('');
   const [searchResults, setSearchResults] = useState<any>(null);
   const [error, setError] = useState<Error | null>(null);
@@ -66,15 +67,15 @@ export default function Home({
       setIsLoading(true);
       try {
         const host = window.location.host;
-        const domainName = window.location.hostname.replace(/^www\./, '').split('.')[0].toUpperCase();
+        const hostName = window.location.hostname.replace(/^www\./, '').split('.')[0].toUpperCase();
         const protocol = window.location.protocol;
         const startTime = performance.now();
-
+        setDomainName(hostName);
         const params = new URLSearchParams({
           query: searchParams.query,
           marketCode,
           clientIP: clientIP,
-          hostName: domainName,
+          hostName: hostName,
         });
 
         if (searchParams.subid) {
@@ -183,7 +184,7 @@ export default function Home({
       {isLoading ? (
         <SearchResultsLoading />
       ) : (
-        searchResults && <SearchResults results={searchResults} cid={cid} />
+        searchResults && <SearchResults results={searchResults} cid={cid} domainName={domainName} />
       )}
     </main>
   );

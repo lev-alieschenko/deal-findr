@@ -1,0 +1,22 @@
+export const clarityTags: { [key: string]: string } = {
+    "ALWAYS-DEALS": "rxj42hkxyh",
+    "CRAZY-SEARCH": "rxj4nri9q5",
+    "DEAL-SEARCHER": "rxj4vkkc9k",
+    "FAVORITEPICKS.NET": "rxj545d8l7",
+    "FINDERQUICK": "rxj5cqzmvf",
+    "GOFINDITNOW": "rxj5np7o8u",
+    "ONLYGOODRESULTS": "rxj5tkhs06",
+    "SEARCH-101": "rxj61zjynf",
+    "SEARCHABLEDEAL": "rxj6as0cg4",
+    "SEARCHINGBETTER": "rxj6hxwndv",
+    "SHOPFAVORITES.NET": "rxj6ob3iep",
+    "SHOPPINGRESULTS.NET": "rxj6twzj56",
+    "SUPERSEARCHES": "rxj70he3fz",
+    "TOFINDNOW": "rxj76q6eq6",
+    "TOPSEARCHLIST": "rxj7e7nqhp",
+    "TOPSEARCHLISTS": "rxj7m9g1i4",
+    "TOPSEARCHS": "rxj7sun8rp",
+    "DEAL-FINDR": "rxj4vkkc9k",
+    "LOCALHOST": "rxj4vkkc9k",
+  };
+  

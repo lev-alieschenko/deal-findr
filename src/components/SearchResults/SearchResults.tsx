@@ -6,6 +6,7 @@ import { useAppContext } from '../context';
 import { PaginationControl } from '../PaginationControl';
 import { TEXT_ADS_PER_PAGE } from '../common/constants';
 import ProductAdList from '../ProductAdsList/ProductAdList';
+import { clarityTags } from '../common/clarityTag';
 
 export interface SearchResultsProps {
   results: {
@@ -74,9 +75,10 @@ export interface SearchResultsProps {
     adSourceTag?: string;
   };
   cid?: string;
+  domainName?: string;
 }
 
-export const SearchResults: React.FC<SearchResultsProps> = ({ results, cid }) => {
+export const SearchResults: React.FC<SearchResultsProps> = ({ results, cid, domainName }) => {
   const { query } = useAppContext();
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -98,6 +100,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ results, cid }) =>
       displayDomain: ad.displayDomain,
     }));
   };
+  const clarityTag = domainName ? clarityTags[domainName] : 'rxj76q6eq6';
 
   const allAds = transformAdsData();
   const totalPages = Math.max(Math.ceil(allAds.length / TEXT_ADS_PER_PAGE), 1);
@@ -172,7 +175,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ results, cid }) =>
         cid: '${clientID || ''}',
         ig: '${impressionGUID || ''}',
         select_tier: {
-          clarityId: 'clarityId',
+          clarityId: '${clarityTag || ''}',
           rguid: '${rguid || ''}'
         },
         test_mode: false
