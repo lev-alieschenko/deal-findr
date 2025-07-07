@@ -16,7 +16,7 @@ export const clarityTags: { [key: string]: string } = {
     "TOPSEARCHLIST": "rxj7e7nqhp",
     "TOPSEARCHLISTS": "rxj7m9g1i4",
     "TOPSEARCHS": "rxj7sun8rp",
-    "DEAL-FINDR": "rxj4vkkc9k",
-    "LOCALHOST": "rxj4vkkc9k",
+    "DEAL-FINDR": "rrq0a1oxo1",
+    "LOCALHOST": "rrq0a1oxo1",
   };
   
