@@ -143,6 +143,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ results, cid, doma
     }
   }, [searchID, trafficSource]);
 
+
   useEffect(() => {
     const script = document.createElement('script');
     script.type = 'text/javascript';
@@ -150,7 +151,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ results, cid, doma
     script.defer = true;
     script.text = `
       (function(w, d, t, x, m, l, p) {
-        w['XMLPlusSTObject'] = m;
+        w['YahooSearchAPIIns'] = m;
         w[m] = w[m] || function() {
           (w[m].q = w[m].q || []).push(arguments);
         };
@@ -166,10 +167,11 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ results, cid, doma
         window,
         document,
         'script',
-        'https://s.yimg.com/ds/scripts/selectTier-v1.1.0.js',
-        'selectTier'
+        'https://s.yimg.com/ds/scripts/ysapiIns-v1.1.0.js',
+        'ysapiIns'
       );
-      selectTier('init', {
+  
+      ysapiIns('init', {
         source_tag: '${trafficSource || ''}',
         ysid: '${searchID || ''}',
         cid: '${clientID || ''}',
@@ -182,7 +184,8 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ results, cid, doma
       });
     `;
     document.body.appendChild(script);
-  }, [searchID, rguid, trafficSource]);
+  }, [searchID, rguid, trafficSource, clientID, impressionGUID, clarityTag]);
+
 
   if (!allAds.length) {
     return <p>No content</p>;
