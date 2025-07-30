@@ -30,8 +30,7 @@ export default function RedirectButton({
   const handleClick = () => {
     // Format the keyword with underscores and prefix it
     const formattedSubid = subid.replace(/\s+/g, "_");
-    const formattedKeyword = text.replace(/\s+/g, "_");
-    const subidValue = `${formattedSubid}_${formattedKeyword}${getDeviceSuffix()}`;
+    const subidValue = `${formattedSubid}${getDeviceSuffix()}`;
 
     // Construct URL with all parameters
     const url = `/?query=${encodeURIComponent(text)}${cid ? `&cid=${encodeURIComponent(cid)}` : ''}${clickid ? `&clickid=${encodeURIComponent(clickid)}` : ''}${subidValue ? `&subid=${encodeURIComponent(subidValue)}` : ''}&t=n2s3c`;
